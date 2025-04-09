@@ -1,0 +1,14 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: classpath:yaml/application-localSecret.yml
+  # MySQL
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/leap?&serverTimezone=Asia/Seoul
+  # JPA
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true

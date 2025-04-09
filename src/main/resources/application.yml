@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: leap
+  config:
+    import:
+      - classpath:/yaml/application-local.yml
+      - classpath:/yaml/application-dev.yml
+  profiles:
+    active: local
+  # JPA
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+    show-sql: true
+
+# Logging
+logging:
+  level:
+    org.hibernate.sql: debug
+    org.hibernate.orm.jdbc.bind: trace

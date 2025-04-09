@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: classpath:yaml/application-devSecret.yml
+  # mariaDB
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+  # JPA
+  jpa:
+    hibernate:
+      ddl-auto: none
