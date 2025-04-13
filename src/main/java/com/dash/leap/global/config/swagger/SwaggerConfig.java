@@ -1,4 +1,4 @@
-package com.dash.leap.config.swagger;
+package com.dash.leap.global.config.swagger;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

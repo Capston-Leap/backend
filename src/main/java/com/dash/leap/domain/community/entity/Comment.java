@@ -1,6 +1,6 @@
 package com.dash.leap.domain.community.entity;
 
-import com.dash.leap.config.domain.BaseEntity;
+import com.dash.leap.global.domain.BaseEntity;
 import com.dash.leap.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

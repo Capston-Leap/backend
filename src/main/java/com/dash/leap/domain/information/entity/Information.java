@@ -1,6 +1,6 @@
 package com.dash.leap.domain.information.entity;
 
-import com.dash.leap.config.domain.BaseEntity;
+import com.dash.leap.global.domain.BaseEntity;
 import com.dash.leap.domain.information.entity.enums.InfoType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
