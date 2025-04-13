@@ -38,4 +38,8 @@ public class UserService {
         User savedUser = userRepository.save(user);
         return UserRegisterResponse.from(savedUser);
     }
+
+    public boolean checkLoginIdDuplicate(String loginId) {
+        return userRepository.existsByLoginId(loginId);
+    }
 }
