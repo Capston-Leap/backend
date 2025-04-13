@@ -1,8 +1,8 @@
-package com.dash.leap.config.auth.jwt.controller;
+package com.dash.leap.global.auth.jwt.controller;
 
-import com.dash.leap.config.auth.jwt.controller.docs.AuthControllerDocs;
+import com.dash.leap.global.auth.jwt.controller.docs.AuthControllerDocs;
 import com.dash.leap.domain.user.dto.request.IdDuplicateRequest;
-import com.dash.leap.config.auth.jwt.service.AuthService;
+import com.dash.leap.global.auth.jwt.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

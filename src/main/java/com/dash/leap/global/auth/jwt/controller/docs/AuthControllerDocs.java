@@ -1,4 +1,4 @@
-package com.dash.leap.config.auth.jwt.controller.docs;
+package com.dash.leap.global.auth.jwt.controller.docs;
 
 import com.dash.leap.domain.user.dto.request.IdDuplicateRequest;
 import io.swagger.v3.oas.annotations.Operation;

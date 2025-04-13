@@ -1,4 +1,4 @@
-package com.dash.leap.config.domain;
+package com.dash.leap.global.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

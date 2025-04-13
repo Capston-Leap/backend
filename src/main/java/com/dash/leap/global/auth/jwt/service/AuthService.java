@@ -1,10 +1,9 @@
-package com.dash.leap.config.auth.jwt.service;
+package com.dash.leap.global.auth.jwt.service;
 
-import com.dash.leap.config.auth.jwt.exception.DuplicateLoginIdException;
+import com.dash.leap.global.auth.jwt.exception.DuplicateLoginIdException;
 import com.dash.leap.domain.user.repository.UserRepository;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

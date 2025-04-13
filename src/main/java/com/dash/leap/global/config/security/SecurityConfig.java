@@ -1,4 +1,4 @@
-package com.dash.leap.config.security;
+package com.dash.leap.global.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

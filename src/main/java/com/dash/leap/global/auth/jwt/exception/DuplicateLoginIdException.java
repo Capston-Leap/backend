@@ -1,4 +1,4 @@
-package com.dash.leap.config.auth.jwt.exception;
+package com.dash.leap.global.auth.jwt.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

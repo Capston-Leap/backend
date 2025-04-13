@@ -1,4 +1,4 @@
-package com.dash.leap.config.exception;
+package com.dash.leap.global.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
