@@ -6,6 +6,7 @@ import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,6 @@ public class UserController implements UserControllerDocs {
             @Valid @RequestBody UserRegisterRequest request
     ) {
         UserRegisterResponse registerResponse = userService.register(request);
-        return ResponseEntity.ok().body(registerResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registerResponse);
     }
 }
