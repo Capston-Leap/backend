@@ -1,7 +1,8 @@
 package com.dash.leap.global.auth.jwt.controller;
 
+import com.dash.leap.global.auth.dto.response.IdDuplicateResponse;
 import com.dash.leap.global.auth.jwt.controller.docs.AuthControllerDocs;
-import com.dash.leap.domain.user.dto.request.IdDuplicateRequest;
+import com.dash.leap.global.auth.dto.request.IdDuplicateRequest;
 import com.dash.leap.global.auth.jwt.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,10 @@ public class AuthController implements AuthControllerDocs {
     private final AuthService authService;
 
     @PostMapping("/verify")
-    public ResponseEntity<Boolean> checkLoginIdDuplicate(
+    public ResponseEntity<IdDuplicateResponse> checkLoginIdDuplicate(
             @Valid @RequestBody IdDuplicateRequest request
     ) {
-        boolean validateLoginId = authService.validateLoginId(request.loginId());
-        return ResponseEntity.ok().body(validateLoginId);
+        IdDuplicateResponse response = authService.validateLoginId(request.loginId());
+        return ResponseEntity.ok().body(response);
     }
 }
