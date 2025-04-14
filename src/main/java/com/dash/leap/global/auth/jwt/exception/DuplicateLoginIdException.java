@@ -6,7 +6,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class DuplicateLoginIdException extends RuntimeException {
 
-    public DuplicateLoginIdException(String loginId) {
-        super("이미 사용 중인 아이디입니다: " + loginId);
+    public DuplicateLoginIdException() {
+    }
+
+    public DuplicateLoginIdException(String message) {
+        super(message);
+    }
+
+    public DuplicateLoginIdException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DuplicateLoginIdException(Throwable cause) {
+        super(cause);
     }
 }
