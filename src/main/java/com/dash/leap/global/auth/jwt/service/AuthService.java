@@ -1,5 +1,6 @@
 package com.dash.leap.global.auth.jwt.service;
 
+import com.dash.leap.global.auth.dto.response.IdDuplicateResponse;
 import com.dash.leap.global.auth.jwt.exception.DuplicateLoginIdException;
 import com.dash.leap.domain.user.repository.UserRepository;
 import jakarta.validation.constraints.NotBlank;
@@ -14,10 +15,11 @@ public class AuthService {
 
     private final UserRepository userRepository;
 
-    public boolean validateLoginId(@NotBlank String loginId) {
+    public IdDuplicateResponse validateLoginId(@NotBlank String loginId) {
         if (userRepository.existsByLoginId(loginId)) {
-            throw new DuplicateLoginIdException(loginId);
+            throw new DuplicateLoginIdException("이미 존재하는 아이디입니다.");
         }
-        return false;
+
+        return new IdDuplicateResponse(loginId, "사용 가능한 아이디입니다.");
     }
 }
