@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             jwtTokenProvider.validateToken(token);
             Claims claims = jwtTokenProvider.getPayload(token);
 
-            String userId = claims.get("id", String.class);
+            Long userId = claims.get("id", Long.class);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
