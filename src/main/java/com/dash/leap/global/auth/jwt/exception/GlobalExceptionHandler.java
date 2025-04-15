@@ -20,4 +20,12 @@ public class GlobalExceptionHandler {
         log.info("DuplicateLoginIdExceptionResponse: {}", exceptionResponse);
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ApiResponse(responseCode = "401")
+    public ResponseEntity<ExceptionResponse> handleUnauthorizedException(UnauthorizedException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.toString(), e.getMessage());
+        log.warn("UnauthorizedExceptionResponse: {}", exceptionResponse);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+    }
 }
