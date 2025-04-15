@@ -1,5 +1,7 @@
-package com.dash.leap.global.auth.jwt.exception;
+package com.dash.leap.global.exception;
 
+import com.dash.leap.global.auth.jwt.exception.DuplicateLoginIdException;
+import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

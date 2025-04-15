@@ -1,4 +1,4 @@
-package com.dash.leap.global.auth.jwt.exception;
+package com.dash.leap.global.exception;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
