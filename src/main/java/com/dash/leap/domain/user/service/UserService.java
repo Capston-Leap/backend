@@ -15,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -37,7 +35,6 @@ public class UserService {
                 .chatbotType(ChatbotType.FF) // TODO: 수정 필요
                 .userType(UserType.USER)
                 .level(1)
-                .registerTime(LocalDateTime.now())
                 .build();
 
         User savedUser = userRepository.save(user);
