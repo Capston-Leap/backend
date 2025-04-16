@@ -23,7 +23,7 @@ public class PostService {
 
     @Transactional
     public PostCreateResponse create(Long communityId, PostCreateRequest request) {
-        User user = userRepository.findByLoginId(request.loginId())
+        User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         Community community = communityRepository.findById(communityId)

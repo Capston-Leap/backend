@@ -16,7 +16,7 @@ public class PostController {
 
     @PostMapping("/{communityId}/post")
     public ResponseEntity<PostCreateResponse> createPost(
-            @PathVariable Long communityId,
+            @PathVariable (name = "communityId") Long communityId,
             @RequestBody PostCreateRequest request
     ) {
         return ResponseEntity.ok(postService.create(communityId, request));
