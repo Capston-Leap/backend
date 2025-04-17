@@ -72,4 +72,21 @@ public class PostService {
                 "게시글이 성공적으로 수정되었습니다."
         );
     }
+
+    // 게시글 삭제
+    @Transactional
+    public void delete(Long postId, Long userId, Long communityId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        if (!post.getCommunity().getId().equals(communityId)) {
+            throw new IllegalStateException("해당 커뮤니티에 속한 게시글이 아닙니다.");
+        }
+
+        if (!post.getUser().getId().equals(userId)) {
+            throw new IllegalStateException("게시글 작성자만 삭제할 수 있습니다.");
+        }
+
+        postRepository.delete(post);
+    }
 }

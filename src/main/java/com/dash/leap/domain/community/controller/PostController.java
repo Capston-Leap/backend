@@ -1,5 +1,6 @@
 package com.dash.leap.domain.community.controller;
 
+import com.dash.leap.domain.community.controller.docs.CommunityControllerDocs;
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
@@ -13,7 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/community")
-public class PostController {
+public class PostController implements CommunityControllerDocs {
 
     private final PostService postService;
 
@@ -38,5 +39,16 @@ public class PostController {
         return ResponseEntity.ok(
                 postService.update(postId, request, userId, communityId)
         );
+    }
+
+    // 커뮤니티 게시글 삭제
+    @DeleteMapping("/{communityId}/post/{postId}")
+    public ResponseEntity<Void> deletePost(
+            @PathVariable Long communityId,
+            @PathVariable Long postId,
+            @AuthenticationPrincipal Long userId
+    ) {
+        postService.delete(postId, userId, communityId);
+        return ResponseEntity.noContent().build();
     }
 }
