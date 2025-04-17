@@ -89,4 +89,12 @@ public class UserService {
     public boolean checkLoginIdDuplicate(String loginId) {
         return userRepository.existsByLoginId(loginId);
     }
+
+    @Transactional
+    public void withdraw(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UnauthorizedException("사용자를 찾을 수 없습니다."));
+        log.warn("회원탈퇴 요청: userId = {}", userId);
+        userRepository.delete(user);
+    }
 }

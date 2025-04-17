@@ -55,4 +55,10 @@ public class UserController implements UserControllerDocs {
         userService.logout(userId);
         return ResponseEntity.status(NO_CONTENT).build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal Long userId) {
+        userService.withdraw(userId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }

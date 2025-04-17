@@ -38,4 +38,8 @@ public interface UserControllerDocs {
     @Operation(summary = "로그아웃", description = "로그아웃을 요청합니다. Redis 사용 안 하므로 JWT는 클라이언트에서 삭제 부탁드립니다.")
     @ApiResponse(description = "로그아웃 성공", responseCode = "204")
     ResponseEntity<Void> logout(Long userId);
+
+    @Operation(summary = "회원탈퇴", description = "회원탈퇴를을 요청합니다.")
+    @ApiResponse(description = "회원탈퇴 성공", responseCode = "204")
+    ResponseEntity<Void> withdraw(Long userId);
 }
