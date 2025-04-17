@@ -2,6 +2,8 @@ package com.dash.leap.domain.community.service;
 
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
+import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
+import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.domain.community.entity.Community;
 import com.dash.leap.domain.community.entity.Post;
 import com.dash.leap.domain.community.repository.CommunityRepository;
@@ -44,6 +46,30 @@ public class PostService {
                 savedPost.getTitle(),
                 savedPost.getContent(),
                 "게시글이 커뮤니티에 성공적으로 등록되었습니다."
+        );
+    }
+
+    // 게시글 수정
+    @Transactional
+    public PostUpdateResponse update(Long postId, PostUpdateRequest request, Long userId, Long communityId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        if (!post.getCommunity().getId().equals(communityId)) {
+            throw new IllegalStateException("요청한 커뮤니티에 해당 게시글이 존재하지 않습니다.");
+        }
+
+        if (!post.getUser().getId().equals(userId)) {
+            throw new IllegalStateException("게시글 작성자만 수정할 수 있습니다.");
+        }
+
+        post.update(request.title(), request.content());
+
+        return new PostUpdateResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                "게시글이 성공적으로 수정되었습니다."
         );
     }
 }
