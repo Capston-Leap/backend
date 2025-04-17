@@ -1,10 +1,7 @@
 package com.dash.leap.domain.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -23,6 +20,10 @@ public record UserRegisterRequest(
 //                @Size
         String password,
 
+        @Schema(description = "비밀번호 확인", example = "password1234!")
+        @NotBlank(message = "비밀번호 확인은 필수 입력 값입니다.")
+        String passwordConfirm,
+
         @Schema(description = "이름", example = "김리피")
         @NotBlank(message = "이름은 필수 입력 값입니다.")
         String name,
@@ -32,6 +33,6 @@ public record UserRegisterRequest(
         String nickname,
 
         @Schema(description = "생년월일", example = "2000-02-05")
-        @NotBlank(message = "생년월일은 필수 입력 값입니다.")
+        @NotNull(message = "생년월일은 필수 입력 값입니다.")
         LocalDate birth) {
 }

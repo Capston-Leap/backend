@@ -1,6 +1,7 @@
 package com.dash.leap.global.exception;
 
 import com.dash.leap.global.auth.jwt.exception.DuplicateLoginIdException;
+import com.dash.leap.global.auth.jwt.exception.PasswordMismatchException;
 import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -29,5 +30,13 @@ public class GlobalExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED.toString(), e.getMessage());
         log.warn("UnauthorizedExceptionResponse: {}", exceptionResponse);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    @ApiResponse(responseCode = "400")
+    public ResponseEntity<ExceptionResponse> handlePasswordMismatchException(PasswordMismatchException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
+        log.warn("PasswordMismatchExceptionResponse: {}", exceptionResponse);
+        return ResponseEntity.badRequest().body(exceptionResponse);
     }
 }

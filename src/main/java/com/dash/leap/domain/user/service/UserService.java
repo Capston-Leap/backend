@@ -8,6 +8,8 @@ import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.entity.enums.ChatbotType;
 import com.dash.leap.domain.user.entity.enums.UserType;
 import com.dash.leap.domain.user.repository.UserRepository;
+import com.dash.leap.global.auth.jwt.exception.DuplicateLoginIdException;
+import com.dash.leap.global.auth.jwt.exception.PasswordMismatchException;
 import com.dash.leap.global.auth.jwt.service.JwtTokenProvider;
 import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,15 @@ public class UserService {
 
     @Transactional
     public UserRegisterResponse register(UserRegisterRequest request) {
+
+        if (checkLoginIdDuplicate(request.loginId())) {
+            throw new DuplicateLoginIdException("아이디 중복 검사를 실시해주세요.");
+        }
+
+        if (!request.password().equals(request.passwordConfirm())) {
+            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
+        }
+
         User user = User.builder()
                 .loginId(request.loginId())
                 .password(passwordEncoder.encode(request.password()))
