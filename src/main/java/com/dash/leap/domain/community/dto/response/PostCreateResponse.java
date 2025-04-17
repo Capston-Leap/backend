@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "커뮤니티 게시글 생성 응답입니다.")
 public record PostCreateResponse(
 
-        @Schema(description = "게시글 ID", example = "100")
+        @Schema(description = "게시글 ID", example = "3")
         Long postId,
 
         @Schema(description = "제목", example = "스터디 모집합니다.")
