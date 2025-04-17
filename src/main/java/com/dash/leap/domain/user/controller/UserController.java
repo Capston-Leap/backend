@@ -11,10 +11,11 @@ import com.dash.leap.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestController
@@ -29,7 +30,7 @@ public class UserController implements UserControllerDocs {
             @Valid @RequestBody UserRegisterRequest request
     ) {
         UserRegisterResponse registerResponse = userService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(registerResponse);
+        return ResponseEntity.status(CREATED).body(registerResponse);
     }
 
     @PostMapping("/login")
@@ -52,6 +53,6 @@ public class UserController implements UserControllerDocs {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@AuthenticationPrincipal Long userId) {
         userService.logout(userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 }
