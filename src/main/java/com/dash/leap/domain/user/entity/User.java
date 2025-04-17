@@ -1,5 +1,6 @@
 package com.dash.leap.domain.user.entity;
 
+import com.dash.leap.domain.mission.entity.enums.MissionType;
 import com.dash.leap.domain.user.entity.enums.ChatbotType;
 import com.dash.leap.domain.user.entity.enums.UserType;
 import jakarta.persistence.*;
@@ -52,6 +53,11 @@ public class User {
     private ChatbotType chatbotType;
 
     private Integer level;
+
+    @Setter(AccessLevel.PUBLIC)
+    @Column(name = "mission_area")
+    @Enumerated(EnumType.STRING)
+    private MissionType missionType;
 
     @Column(name = "class")
     @Enumerated(EnumType.STRING)
