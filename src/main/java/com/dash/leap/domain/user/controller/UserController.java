@@ -10,11 +10,13 @@ import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -45,5 +47,11 @@ public class UserController implements UserControllerDocs {
     ) {
         ChatbotSettingResponse chatbotSettingResponse = userService.leapySetting(userId, request);
         return ResponseEntity.ok(chatbotSettingResponse);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal Long userId) {
+        userService.logout(userId);
+        return ResponseEntity.ok().build();
     }
 }

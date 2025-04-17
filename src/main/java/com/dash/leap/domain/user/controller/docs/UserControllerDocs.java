@@ -22,7 +22,7 @@ public interface UserControllerDocs {
             @Parameter(required = true) @Valid UserRegisterRequest request
     );
 
-    @Operation(summary = "로그인", description = "로그인을 요청합니다.")
+    @Operation(summary = "로그인", description = "로그인을 요청합니다. 응답에 Token 반환합니다.")
     @ApiResponse(description = "로그인 성공", responseCode = "200")
     ResponseEntity<LoginResponse> login(
             @Valid LoginRequest request
@@ -34,4 +34,8 @@ public interface UserControllerDocs {
             @Valid ChatbotSettingRequest request,
             Long userId
     );
+
+    @Operation(summary = "로그아웃", description = "로그아웃을 요청합니다. Redis 사용 안 하므로 JWT는 클라이언트에서 삭제 부탁드립니다.")
+    @ApiResponse(description = "로그아웃 성공", responseCode = "200")
+    ResponseEntity<Void> logout(Long userId);
 }

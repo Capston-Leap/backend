@@ -15,10 +15,12 @@ import com.dash.leap.global.auth.jwt.exception.PasswordMismatchException;
 import com.dash.leap.global.auth.jwt.service.JwtTokenProvider;
 import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -76,6 +78,12 @@ public class UserService {
         user.setChatbotType(requestChatbotType);
 
         return ChatbotSettingResponse.from(user);
+    }
+
+    @Transactional
+    public void logout(Long userId) {
+        log.info("로그아웃 요청: userId = {}", userId);
+        // Redis 이용 시 Blacklist 추가하는 방향으로 수정
     }
 
     public boolean checkLoginIdDuplicate(String loginId) {
