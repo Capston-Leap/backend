@@ -2,9 +2,11 @@ package com.dash.leap.domain.user.controller.docs;
 
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
 import com.dash.leap.domain.user.dto.request.LoginRequest;
+import com.dash.leap.domain.user.dto.request.MissionAreaSettingRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
 import com.dash.leap.domain.user.dto.response.LoginResponse;
+import com.dash.leap.domain.user.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +34,13 @@ public interface UserControllerDocs {
     @ApiResponse(description = "설정 성공", responseCode = "200")
     ResponseEntity<ChatbotSettingResponse> chatbotSetting(
             @Valid ChatbotSettingRequest request,
+            Long userId
+    );
+
+    @Operation(summary = "자립목표영역 선정", description = "자립목표영역설정을 요청합니다.")
+    @ApiResponse(description = "목표설정 성공", responseCode = "200")
+    ResponseEntity<MissionAreaSettingResponse> missionAreaSetting(
+            @Valid MissionAreaSettingRequest request,
             Long userId
     );
 

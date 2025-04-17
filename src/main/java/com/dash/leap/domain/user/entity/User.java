@@ -54,6 +54,7 @@ public class User {
 
     private Integer level;
 
+    @Setter(AccessLevel.PUBLIC)
     @Column(name = "mission_area")
     @Enumerated(EnumType.STRING)
     private MissionType missionType;
