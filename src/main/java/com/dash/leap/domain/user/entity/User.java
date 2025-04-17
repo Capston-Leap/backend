@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -45,6 +46,7 @@ public class User {
     @Column(name = "registered_at", updatable = false)
     private LocalDateTime registerTime;
 
+    @Setter(AccessLevel.PUBLIC)
     @Column(name = "chatbot")
     @Enumerated(EnumType.STRING)
     private ChatbotType chatbotType;

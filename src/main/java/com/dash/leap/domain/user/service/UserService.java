@@ -1,7 +1,9 @@
 package com.dash.leap.domain.user.service;
 
+import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
 import com.dash.leap.domain.user.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
+import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
 import com.dash.leap.domain.user.dto.response.LoginResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.entity.User;
@@ -63,6 +65,17 @@ public class UserService {
 
         String token = jwtTokenProvider.createToken(user);
         return new LoginResponse(token);
+    }
+
+    @Transactional
+    public ChatbotSettingResponse leapySetting(Long userId, ChatbotSettingRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UnauthorizedException("사용자를 찾을 수 없습니다."));
+
+        ChatbotType requestChatbotType = request.toChatbotType();
+        user.setChatbotType(requestChatbotType);
+
+        return ChatbotSettingResponse.from(user);
     }
 
     public boolean checkLoginIdDuplicate(String loginId) {
