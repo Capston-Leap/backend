@@ -39,4 +39,12 @@ public class GlobalExceptionHandler {
         log.warn("PasswordMismatchExceptionResponse: {}", exceptionResponse);
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ApiResponse(responseCode = "404")
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.NOT_FOUND.toString(), e.getMessage());
+        log.warn("NotFoundExceptionResponse: {}", exceptionResponse);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
+    }
 }
