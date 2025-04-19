@@ -19,11 +19,11 @@ public class CommentController implements CommentControllerDocs {
     // 커뮤니티 댓글 생성
     @PostMapping("/{communityId}/post/{postId}/comment")
     public ResponseEntity<CommentCreateResponse> createComment(
-            @AuthenticationPrincipal Long userId,
             @PathVariable Long communityId,
             @PathVariable Long postId,
+            @AuthenticationPrincipal Long userId,
             @RequestBody CommentCreateRequest request
     ) {
-        return ResponseEntity.ok(commentService.create(userId, communityId, postId, request));
+        return ResponseEntity.ok(commentService.create(communityId, postId, userId, request));
     }
 }
