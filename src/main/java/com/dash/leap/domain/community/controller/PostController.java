@@ -1,6 +1,6 @@
 package com.dash.leap.domain.community.controller;
 
-import com.dash.leap.domain.community.controller.docs.CommunityControllerDocs;
+import com.dash.leap.domain.community.controller.docs.PostControllerDocs;
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
@@ -14,7 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/community")
-public class PostController implements CommunityControllerDocs {
+public class PostController implements PostControllerDocs {
 
     private final PostService postService;
 
