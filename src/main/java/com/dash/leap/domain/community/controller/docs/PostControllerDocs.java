@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Community", description = "Community API")
-public interface CommunityControllerDocs {
+@Tag(name = "Community-Post", description = "Community-Post API")
+public interface PostControllerDocs {
 
     // 커뮤니티 게시글 생성
     @Operation(summary = "게시글 생성", description = "커뮤니티에 게시글을 작성합니다.")
@@ -41,4 +41,6 @@ public interface CommunityControllerDocs {
             @PathVariable(name = "postId") Long postId,
             Long userId
     );
+
+
 }
