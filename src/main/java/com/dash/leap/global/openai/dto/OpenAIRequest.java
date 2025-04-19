@@ -12,14 +12,11 @@ public record OpenAIRequest(
         int max_tokens
 
 ) {
-    public static OpenAIRequest of(String model, int maxTokens, String systemPrompt, String userMessage) {
+    public static OpenAIRequest of(String model, int maxTokens, List<MessageDto> messages) {
         return OpenAIRequest.builder()
                 .model(model)
                 .max_tokens(maxTokens)
-                .messages(List.of(
-                        MessageDto.builder().role("system").content(systemPrompt).build(),
-                        MessageDto.builder().role("user").content(userMessage).build()
-                ))
+                .messages(messages)
                 .build();
     }
 }

@@ -11,10 +11,14 @@ import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.repository.UserRepository;
 import com.dash.leap.global.exception.NotFoundException;
 import com.dash.leap.global.openai.client.OpenAIClient;
+import com.dash.leap.global.openai.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,7 +49,30 @@ public class ChatMessageService {
 
         // 지피티 응답
         String systemPrompt = SystemPromptFactory.getSystemPrompt(user.getChatbotType());
-        String reply = openAIClient.getGPTResponse(systemPrompt, request.content());
+
+        log.info("과거 대화 내용을 가져옵니다: chat.getId() = {}", chat.getId());
+        List<Message> pastMessages = messageRepository.findByMessagesByChatId(chat.getId());
+
+        int MAX = 15; // 최대 대화 기억 개수
+        if (pastMessages.size() > MAX) {
+            pastMessages = pastMessages.subList(pastMessages.size() - MAX, pastMessages.size());
+        }
+
+        List<MessageDto> messageDtoList = pastMessages.stream()
+                .map(m -> MessageDto.builder()
+                        .role(m.getSender().startsWith("리피") ? "assistant" : "user")
+                        .content(m.getContent())
+                        .build())
+                .collect(Collectors.toList());
+
+        messageDtoList.add(0, MessageDto.builder()
+                .role("system")
+                .content(systemPrompt)
+                .build());
+
+        log.info("GPT 응답을 받습니다");
+        String reply = openAIClient.getGPTResponse(messageDtoList);
+        log.info("응답 받았습니다: reply = {}", reply);
 
         Message gptMessage = Message.builder()
                 .chat(chat)
