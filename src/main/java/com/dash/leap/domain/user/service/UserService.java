@@ -73,42 +73,31 @@ public class UserService {
     }
 
     @Transactional
-    public ChatbotSettingResponse leapySetting(Long userId, ChatbotSettingRequest request) {
-        User user = getUserOrElseThrow(userId);
-
+    public ChatbotSettingResponse leapySetting(User user, ChatbotSettingRequest request) {
         ChatbotType requestChatbotType = request.toChatbotType();
         user.setChatbotType(requestChatbotType);
-
         return ChatbotSettingResponse.from(user);
     }
 
     @Transactional
-    public MissionAreaSettingResponse missionSetting(Long userId, MissionAreaSettingRequest request) {
-        User user = getUserOrElseThrow(userId);
+    public MissionAreaSettingResponse missionSetting(User user, MissionAreaSettingRequest request) {
         user.setMissionType(request.missionType());
         return MissionAreaSettingResponse.from(user);
     }
 
     @Transactional
-    public void logout(Long userId) {
-        getUserOrElseThrow(userId);
-        log.info("로그아웃 요청: userId = {}", userId);
+    public void logout(User user) {
+        log.info("로그아웃 요청: userId = {}", user.getId());
         // Redis 이용 시 Blacklist 추가하는 방향으로 수정
     }
 
     @Transactional
-    public void withdraw(Long userId) {
-        User user = getUserOrElseThrow(userId);
-        log.warn("회원탈퇴 요청: userId = {}", userId);
+    public void withdraw(User user) {
+        log.warn("회원탈퇴 요청: userId = {}", user.getId());
         userRepository.delete(user);
     }
 
     public boolean checkLoginIdDuplicate(String loginId) {
         return userRepository.existsByLoginId(loginId);
-    }
-
-    private User getUserOrElseThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(NotFoundException::new);
     }
 }

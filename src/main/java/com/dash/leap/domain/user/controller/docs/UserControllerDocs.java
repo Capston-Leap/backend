@@ -8,6 +8,7 @@ import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
 import com.dash.leap.domain.user.dto.response.LoginResponse;
 import com.dash.leap.domain.user.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,21 +35,21 @@ public interface UserControllerDocs {
     @ApiResponse(description = "설정 성공", responseCode = "200")
     ResponseEntity<ChatbotSettingResponse> chatbotSetting(
             @Valid ChatbotSettingRequest request,
-            Long userId
+            CustomUserDetails userDetails
     );
 
     @Operation(summary = "자립목표영역 선정", description = "자립목표영역설정을 요청합니다.")
     @ApiResponse(description = "목표설정 성공", responseCode = "200")
     ResponseEntity<MissionAreaSettingResponse> missionAreaSetting(
             @Valid MissionAreaSettingRequest request,
-            Long userId
+            CustomUserDetails userDetails
     );
 
     @Operation(summary = "로그아웃", description = "로그아웃을 요청합니다. Redis 사용 안 하므로 JWT는 클라이언트에서 삭제 부탁드립니다.")
     @ApiResponse(description = "로그아웃 성공", responseCode = "204")
-    ResponseEntity<Void> logout(Long userId);
+    ResponseEntity<Void> logout(CustomUserDetails userDetails);
 
     @Operation(summary = "회원탈퇴", description = "회원탈퇴를을 요청합니다.")
     @ApiResponse(description = "회원탈퇴 성공", responseCode = "204")
-    ResponseEntity<Void> withdraw(Long userId);
+    ResponseEntity<Void> withdraw(CustomUserDetails userDetails);
 }
