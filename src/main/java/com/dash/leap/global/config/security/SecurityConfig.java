@@ -2,6 +2,7 @@ package com.dash.leap.global.config.security;
 
 import com.dash.leap.global.auth.jwt.service.JwtAuthenticationFilter;
 import com.dash.leap.global.auth.jwt.service.JwtTokenProvider;
+import com.dash.leap.global.auth.user.CustomUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserService customUserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,7 +36,7 @@ public class SecurityConfig {
                         )
                         .permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserService), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .logout(LogoutConfigurer::permitAll);
 
