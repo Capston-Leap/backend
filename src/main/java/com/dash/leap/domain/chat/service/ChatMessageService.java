@@ -10,9 +10,7 @@ import com.dash.leap.domain.chat.repository.ChatRepository;
 import com.dash.leap.domain.chat.repository.MessageRepository;
 import com.dash.leap.domain.chat.service.prompt.SystemPromptFactory;
 import com.dash.leap.domain.user.entity.User;
-import com.dash.leap.domain.user.repository.UserRepository;
 import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
-import com.dash.leap.global.exception.NotFoundException;
 import com.dash.leap.global.openai.client.OpenAIClient;
 import com.dash.leap.global.openai.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
@@ -32,17 +30,14 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ChatMessageService {
 
-    private final UserRepository userRepository;
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final OpenAIClient openAIClient;
 
     @Transactional
-    public LeapyResponse sendMessage(Long userId, LeapyRequest request) {
+    public LeapyResponse sendMessage(User user, LeapyRequest request) {
 
-        User user = getUserOrElseThrow(userId);
-
-        Chat chat = chatRepository.findByUserId(userId)
+        Chat chat = chatRepository.findByUserId(user.getId())
                 .orElseGet(() -> chatRepository.save(Chat.builder().user(user).build()));
 
         Message userMessage = Message.builder()
@@ -91,14 +86,12 @@ public class ChatMessageService {
     }
 
     @Transactional
-    public ChatResponse getMessageList(Long userId, int pageNum, int pageSize) {
+    public ChatResponse getMessageList(User user, int pageNum, int pageSize) {
 
-        User user = getUserOrElseThrow(userId);
-
-        Chat chat = chatRepository.findByUserId(userId)
+        Chat chat = chatRepository.findByUserId(user.getId())
                 .orElseGet(() -> chatRepository.save(Chat.builder().user(user).build()));
 
-        if (!chat.getUser().getId().equals(userId)) {
+        if (!chat.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("해당 채팅에 접근할 권한이 없습니다.");
         }
 
@@ -110,10 +103,5 @@ public class ChatMessageService {
                 .toList();
 
         return new ChatResponse(chat.getId(), responseList, slice.hasNext());
-    }
-
-    private User getUserOrElseThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(NotFoundException::new);
     }
 }

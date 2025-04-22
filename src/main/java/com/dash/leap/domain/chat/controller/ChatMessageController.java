@@ -5,6 +5,7 @@ import com.dash.leap.domain.chat.dto.request.LeapyRequest;
 import com.dash.leap.domain.chat.dto.response.ChatResponse;
 import com.dash.leap.domain.chat.dto.response.LeapyResponse;
 import com.dash.leap.domain.chat.service.ChatMessageService;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,9 @@ public class ChatMessageController implements ChatMessageControllerDocs {
     @PostMapping
     public ResponseEntity<LeapyResponse> sendMessage(
             @Valid @RequestBody LeapyRequest request,
-            @AuthenticationPrincipal Long userId
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        LeapyResponse messageResponse = chatService.sendMessage(userId, request);
+        LeapyResponse messageResponse = chatService.sendMessage(userDetails.user(), request);
         return ResponseEntity.ok(messageResponse);
     }
 
@@ -33,9 +34,9 @@ public class ChatMessageController implements ChatMessageControllerDocs {
     public ResponseEntity<ChatResponse> readChatMessage(
             @RequestParam(name = "page", defaultValue = "0") int pageNum,
             @RequestParam(name = "size", defaultValue = "10") int pageSize,
-            @AuthenticationPrincipal Long userId
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        ChatResponse response = chatService.getMessageList(userId, pageNum, pageSize);
+        ChatResponse response = chatService.getMessageList(userDetails.user(), pageNum, pageSize);
         return ResponseEntity.ok().body(response);
     }
 }
