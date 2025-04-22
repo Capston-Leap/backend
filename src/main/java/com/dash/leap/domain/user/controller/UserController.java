@@ -10,6 +10,7 @@ import com.dash.leap.domain.user.dto.response.LoginResponse;
 import com.dash.leap.domain.user.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.service.UserService;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,30 +47,30 @@ public class UserController implements UserControllerDocs {
     @PatchMapping("/chatbot")
     public ResponseEntity<ChatbotSettingResponse> chatbotSetting(
             @Valid @RequestBody ChatbotSettingRequest request,
-            @AuthenticationPrincipal Long userId
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        ChatbotSettingResponse chatbotSettingResponse = userService.leapySetting(userId, request);
+        ChatbotSettingResponse chatbotSettingResponse = userService.leapySetting(userDetails.user(), request);
         return ResponseEntity.ok(chatbotSettingResponse);
     }
 
     @PatchMapping("/mission-area")
     public ResponseEntity<MissionAreaSettingResponse> missionAreaSetting(
             @Valid @RequestBody MissionAreaSettingRequest request,
-            @AuthenticationPrincipal Long userId
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        MissionAreaSettingResponse settingResponse = userService.missionSetting(userId, request);
+        MissionAreaSettingResponse settingResponse = userService.missionSetting(userDetails.user(), request);
         return ResponseEntity.ok(settingResponse);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@AuthenticationPrincipal Long userId) {
-        userService.logout(userId);
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        userService.logout(userDetails.user());
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal Long userId) {
-        userService.withdraw(userId);
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        userService.withdraw(userDetails.user());
         return ResponseEntity.status(NO_CONTENT).build();
     }
 }

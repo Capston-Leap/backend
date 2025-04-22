@@ -3,6 +3,7 @@ package com.dash.leap.domain.mission.controller;
 import com.dash.leap.domain.mission.controller.docs.MissionControllerDocs;
 import com.dash.leap.domain.mission.dto.response.MissionAreaResponse;
 import com.dash.leap.domain.mission.service.MissionService;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class MissionController implements MissionControllerDocs {
     private final MissionService missionService;
 
     @GetMapping("/goal")
-    public ResponseEntity<MissionAreaResponse> readMissionArea(@AuthenticationPrincipal Long userId) {
-        MissionAreaResponse response = missionService.getMissionDashboard(userId);
+    public ResponseEntity<MissionAreaResponse> readMissionArea(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        MissionAreaResponse response = missionService.getMissionDashboard(userDetails.user());
         return ResponseEntity.ok().body(response);
     }
 }
