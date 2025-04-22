@@ -4,6 +4,7 @@ import com.dash.leap.domain.community.controller.docs.CommentControllerDocs;
 import com.dash.leap.domain.community.dto.request.CommentCreateRequest;
 import com.dash.leap.domain.community.dto.response.CommentCreateResponse;
 import com.dash.leap.domain.community.service.CommentService;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,9 @@ public class CommentController implements CommentControllerDocs {
     public ResponseEntity<CommentCreateResponse> createComment(
             @PathVariable Long communityId,
             @PathVariable Long postId,
-            @AuthenticationPrincipal Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody CommentCreateRequest request
     ) {
-        return ResponseEntity.ok(commentService.create(communityId, postId, userId, request));
+        return ResponseEntity.ok(commentService.create(communityId, postId, userDetails, request));
     }
 }

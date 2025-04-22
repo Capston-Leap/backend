@@ -4,6 +4,7 @@ import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
 import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,8 +19,8 @@ public interface PostControllerDocs {
     @Operation(summary = "게시글 생성", description = "커뮤니티에 게시글을 작성합니다.")
     @ApiResponse(responseCode = "201", description = "게시글 생성 성공")
     ResponseEntity<PostCreateResponse> createPost(
-            Long userId,
             @PathVariable(name = "communityId") Long communityId,
+            CustomUserDetails userDetails,
             @RequestBody PostCreateRequest request
     );
 
@@ -27,9 +28,9 @@ public interface PostControllerDocs {
     @Operation(summary = "게시글 수정", description = "커뮤니티의 특정 게시글을 수정합니다.")
     @ApiResponse(responseCode = "200", description = "게시글 수정 성공")
     ResponseEntity<PostUpdateResponse> updatePost(
-            Long userId,
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
+            CustomUserDetails userDetails,
             @RequestBody PostUpdateRequest request
     );
 
@@ -39,8 +40,6 @@ public interface PostControllerDocs {
     ResponseEntity<Void> deletePost(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
-            Long userId
+            CustomUserDetails userDetails
     );
-
-
 }

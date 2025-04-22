@@ -10,6 +10,7 @@ import com.dash.leap.domain.community.repository.CommunityRepository;
 import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.repository.UserRepository;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +24,10 @@ public class PostService {
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
 
-    // 게시글 생성
+    // 커뮤니티 게시글 생성
     @Transactional
-    public PostCreateResponse create(Long communityId, PostCreateRequest request, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public PostCreateResponse create(Long communityId, CustomUserDetails userDetails, PostCreateRequest request) {
+        User user = userDetails.user();
 
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 커뮤니티입니다."));
@@ -49,9 +49,11 @@ public class PostService {
         );
     }
 
-    // 게시글 수정
+    // 커뮤니티 게시글 수정
     @Transactional
-    public PostUpdateResponse update(Long postId, PostUpdateRequest request, Long userId, Long communityId) {
+    public PostUpdateResponse update(Long communityId, Long postId, CustomUserDetails userDetails, PostUpdateRequest request) {
+        User user = userDetails.user();
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
@@ -59,7 +61,7 @@ public class PostService {
             throw new IllegalStateException("요청한 커뮤니티에 해당 게시글이 존재하지 않습니다.");
         }
 
-        if (!post.getUser().getId().equals(userId)) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new IllegalStateException("게시글 작성자만 수정할 수 있습니다.");
         }
 
@@ -73,9 +75,11 @@ public class PostService {
         );
     }
 
-    // 게시글 삭제
+    // 커뮤니티 게시글 삭제
     @Transactional
-    public void delete(Long postId, Long userId, Long communityId) {
+    public void delete(Long communityId, Long postId, CustomUserDetails userDetails) {
+        User user = userDetails.user();
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
@@ -83,7 +87,7 @@ public class PostService {
             throw new IllegalStateException("해당 커뮤니티에 속한 게시글이 아닙니다.");
         }
 
-        if (!post.getUser().getId().equals(userId)) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new IllegalStateException("게시글 작성자만 삭제할 수 있습니다.");
         }
 
