@@ -2,6 +2,7 @@ package com.dash.leap.domain.community.controller.docs;
 
 import com.dash.leap.domain.community.dto.request.CommentCreateRequest;
 import com.dash.leap.domain.community.dto.response.CommentCreateResponse;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +19,7 @@ public interface CommentControllerDocs {
     ResponseEntity<CommentCreateResponse> createComment(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
-            Long userId,
+            CustomUserDetails userDetails,
             @RequestBody CommentCreateRequest request
     );
 }

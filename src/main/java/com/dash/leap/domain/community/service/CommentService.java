@@ -7,7 +7,7 @@ import com.dash.leap.domain.community.entity.Comment;
 import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.community.repository.CommentRepository;
 import com.dash.leap.domain.user.entity.User;
-import com.dash.leap.domain.user.repository.UserRepository;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +19,11 @@ public class CommentService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
 
-    // 댓글 생성
+    // 커뮤니티 댓글 생성
     @Transactional
-    public CommentCreateResponse create(Long communityId, Long postId, Long userId, CommentCreateRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    public CommentCreateResponse create(Long communityId, Long postId, CustomUserDetails userDetails, CommentCreateRequest request) {
+        User user = userDetails.user();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
