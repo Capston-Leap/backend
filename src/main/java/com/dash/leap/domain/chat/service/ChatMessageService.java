@@ -1,7 +1,9 @@
 package com.dash.leap.domain.chat.service;
 
 import com.dash.leap.domain.chat.dto.request.LeapyRequest;
+import com.dash.leap.domain.chat.dto.response.ChatResponse;
 import com.dash.leap.domain.chat.dto.response.LeapyResponse;
+import com.dash.leap.domain.chat.dto.response.MessageResponse;
 import com.dash.leap.domain.chat.entity.Chat;
 import com.dash.leap.domain.chat.entity.Message;
 import com.dash.leap.domain.chat.repository.ChatRepository;
@@ -9,11 +11,15 @@ import com.dash.leap.domain.chat.repository.MessageRepository;
 import com.dash.leap.domain.chat.service.prompt.SystemPromptFactory;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.repository.UserRepository;
+import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
 import com.dash.leap.global.exception.NotFoundException;
 import com.dash.leap.global.openai.client.OpenAIClient;
 import com.dash.leap.global.openai.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +88,28 @@ public class ChatMessageService {
 
         Message message = messageRepository.save(gptMessage);
         return LeapyResponse.from(message);
+    }
+
+    @Transactional
+    public ChatResponse getMessageList(Long userId, int pageNum, int pageSize) {
+
+        User user = getUserOrElseThrow(userId);
+
+        Chat chat = chatRepository.findByUserId(userId)
+                .orElseGet(() -> chatRepository.save(Chat.builder().user(user).build()));
+
+        if (!chat.getUser().getId().equals(userId)) {
+            throw new UnauthorizedException("해당 채팅에 접근할 권한이 없습니다.");
+        }
+
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Slice<Message> slice = chatRepository.findByChatIdAndLessThanMessageId(chat.getId(), pageable);
+
+        List<MessageResponse> responseList = slice.getContent().stream()
+                .map(MessageResponse::new)
+                .toList();
+
+        return new ChatResponse(chat.getId(), responseList, slice.hasNext());
     }
 
     private User getUserOrElseThrow(Long userId) {
