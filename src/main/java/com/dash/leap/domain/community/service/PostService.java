@@ -9,7 +9,6 @@ import com.dash.leap.domain.community.entity.Post;
 import com.dash.leap.domain.community.repository.CommunityRepository;
 import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.user.entity.User;
-import com.dash.leap.domain.user.repository.UserRepository;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
 
     // 커뮤니티 게시글 생성

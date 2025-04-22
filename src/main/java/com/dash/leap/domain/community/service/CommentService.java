@@ -7,7 +7,6 @@ import com.dash.leap.domain.community.entity.Comment;
 import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.community.repository.CommentRepository;
 import com.dash.leap.domain.user.entity.User;
-import com.dash.leap.domain.user.repository.UserRepository;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ public class CommentService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
 
     // 커뮤니티 댓글 생성
     @Transactional
