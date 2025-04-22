@@ -46,4 +46,28 @@ public class CommentService {
                 "댓글이 성공적으로 등록되었습니다."
         );
     }
+
+    // 커뮤니티 댓글 삭제
+    @Transactional
+    public void delete(Long communityId, Long postId, Long commentId, CustomUserDetails userDetails) {
+        User user = userDetails.user();
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+
+        Post post = comment.getPost();
+        if (!post.getId().equals(postId)) {
+            throw new IllegalArgumentException("해당 댓글은 요청한 게시글에 속하지 않습니다.");
+        }
+
+        if (!post.getCommunity().getId().equals(communityId)) {
+            throw new IllegalArgumentException("해당 게시글은 요청한 커뮤니티에 속하지 않습니다.");
+        }
+
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new IllegalStateException("댓글 작성자만 삭제할 수 있습니다.");
+        }
+
+        commentRepository.delete(comment);
+    }
 }

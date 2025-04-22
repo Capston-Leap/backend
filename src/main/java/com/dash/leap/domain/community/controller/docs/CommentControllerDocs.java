@@ -22,4 +22,14 @@ public interface CommentControllerDocs {
             CustomUserDetails userDetails,
             @RequestBody CommentCreateRequest request
     );
+
+    // 커뮤니티 댓글 삭제
+    @Operation(summary = "댓글 삭제", description = "커뮤니티 게시글의 댓글을 삭제합니다.")
+    @ApiResponse(responseCode = "204", description = "댓글 삭제 성공")
+    ResponseEntity<Void> deleteComment(
+            @PathVariable(name = "communityId") Long communityId,
+            @PathVariable(name = "postId") Long postId,
+            @PathVariable(name = "commentId") Long commentId,
+            CustomUserDetails userDetails
+    );
 }
