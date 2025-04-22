@@ -11,6 +11,7 @@ import com.dash.leap.domain.chat.repository.MessageRepository;
 import com.dash.leap.domain.chat.service.prompt.SystemPromptFactory;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
+import com.dash.leap.global.exception.NotFoundException;
 import com.dash.leap.global.openai.client.OpenAIClient;
 import com.dash.leap.global.openai.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,7 @@ public class ChatMessageService {
     @Transactional
     public LeapyResponse sendMessage(User user, LeapyRequest request) {
 
-        Chat chat = chatRepository.findByUserId(user.getId())
-                .orElseGet(() -> chatRepository.save(Chat.builder().user(user).build()));
+        Chat chat = getChatOrElseThrow(user.getId());
 
         Message userMessage = Message.builder()
                 .chat(chat)
@@ -88,8 +88,7 @@ public class ChatMessageService {
     @Transactional
     public ChatResponse getMessageList(User user, int pageNum, int pageSize) {
 
-        Chat chat = chatRepository.findByUserId(user.getId())
-                .orElseGet(() -> chatRepository.save(Chat.builder().user(user).build()));
+        Chat chat = getChatOrElseThrow(user.getId());
 
         if (!chat.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("해당 채팅에 접근할 권한이 없습니다.");
@@ -103,5 +102,10 @@ public class ChatMessageService {
                 .toList();
 
         return new ChatResponse(chat.getId(), responseList, slice.hasNext());
+    }
+
+    private Chat getChatOrElseThrow(Long userId) {
+        return chatRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("채팅방을 찾을 수 없습니다"));
     }
 }

@@ -1,5 +1,7 @@
 package com.dash.leap.domain.user.service;
 
+import com.dash.leap.domain.chat.entity.Chat;
+import com.dash.leap.domain.chat.repository.ChatRepository;
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
 import com.dash.leap.domain.user.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.MissionAreaSettingRequest;
@@ -32,6 +34,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ChatRepository chatRepository;
 
     @Transactional
     public UserRegisterResponse register(UserRegisterRequest request) {
@@ -54,8 +57,16 @@ public class UserService {
                 .userType(UserType.USER)
                 .level(1)
                 .build();
-
         User savedUser = userRepository.save(user);
+
+        /**
+         * 회원가입 시 채팅방도 항상 생기도록 함
+         */
+        Chat chat = Chat.builder()
+                .user(user)
+                .build();
+        chatRepository.save(chat);
+
         return UserRegisterResponse.from(savedUser);
     }
 
