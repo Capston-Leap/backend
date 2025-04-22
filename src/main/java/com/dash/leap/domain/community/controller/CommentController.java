@@ -27,4 +27,16 @@ public class CommentController implements CommentControllerDocs {
     ) {
         return ResponseEntity.ok(commentService.create(communityId, postId, userDetails, request));
     }
+
+    // 커뮤니티 댓글 삭제
+    @DeleteMapping("/{communityId}/post/{postId}/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable Long communityId,
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        commentService.delete(communityId, postId, commentId, userDetails);
+        return ResponseEntity.noContent().build();
+    }
 }
