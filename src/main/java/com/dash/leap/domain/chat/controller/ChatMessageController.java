@@ -1,8 +1,8 @@
 package com.dash.leap.domain.chat.controller;
 
 import com.dash.leap.domain.chat.controller.docs.ChatMessageControllerDocs;
-import com.dash.leap.domain.chat.dto.request.MessageRequest;
-import com.dash.leap.domain.chat.dto.response.MessageResponse;
+import com.dash.leap.domain.chat.dto.request.LeapyRequest;
+import com.dash.leap.domain.chat.dto.response.LeapyResponse;
 import com.dash.leap.domain.chat.service.ChatMessageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,11 @@ public class ChatMessageController implements ChatMessageControllerDocs {
     private final ChatMessageService chatService;
 
     @PostMapping
-    public ResponseEntity<MessageResponse> sendMessage(
-            @Valid @RequestBody MessageRequest request,
+    public ResponseEntity<LeapyResponse> sendMessage(
+            @Valid @RequestBody LeapyRequest request,
             @AuthenticationPrincipal Long userId
     ) {
-        MessageResponse messageResponse = chatService.sendMessage(userId, request);
+        LeapyResponse messageResponse = chatService.sendMessage(userId, request);
         return ResponseEntity.ok(messageResponse);
     }
 }

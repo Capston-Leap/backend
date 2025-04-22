@@ -1,7 +1,7 @@
 package com.dash.leap.domain.chat.service;
 
-import com.dash.leap.domain.chat.dto.request.MessageRequest;
-import com.dash.leap.domain.chat.dto.response.MessageResponse;
+import com.dash.leap.domain.chat.dto.request.LeapyRequest;
+import com.dash.leap.domain.chat.dto.response.LeapyResponse;
 import com.dash.leap.domain.chat.entity.Chat;
 import com.dash.leap.domain.chat.entity.Message;
 import com.dash.leap.domain.chat.repository.ChatRepository;
@@ -32,7 +32,7 @@ public class ChatMessageService {
     private final OpenAIClient openAIClient;
 
     @Transactional
-    public MessageResponse sendMessage(Long userId, MessageRequest request) {
+    public LeapyResponse sendMessage(Long userId, LeapyRequest request) {
 
         User user = getUserOrElseThrow(userId);
 
@@ -81,7 +81,7 @@ public class ChatMessageService {
                 .build();
 
         Message message = messageRepository.save(gptMessage);
-        return MessageResponse.from(message);
+        return LeapyResponse.from(message);
     }
 
     private User getUserOrElseThrow(Long userId) {
