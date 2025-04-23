@@ -1,6 +1,7 @@
 package com.dash.leap.domain.community.controller;
 
 import com.dash.leap.domain.community.controller.docs.PostControllerDocs;
+import com.dash.leap.domain.community.dto.response.PostDetailResponse;
 import com.dash.leap.domain.community.dto.response.PostListAllResponse;
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
@@ -28,7 +29,19 @@ public class PostController implements PostControllerDocs {
             @RequestParam(name = "page", defaultValue = "1") int pageNum,
             @RequestParam(name = "size", defaultValue = "10") int pageSize
     ) {
-        return ResponseEntity.ok(postService.getPostAll(communityId, pageNum -1 , pageSize));
+        return ResponseEntity.ok(postService.getPostAll(communityId, pageNum - 1 , pageSize));
+    }
+
+    // 커뮤니티 게시글 상세 조회
+    @GetMapping("/{communityId}/post/{postId}")
+    public ResponseEntity<PostDetailResponse> getPostDetail(
+            @PathVariable Long communityId,
+            @PathVariable Long postId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
+    ) {
+        return ResponseEntity.ok(postService.getPostDetail(communityId, postId, pageNum - 1, pageSize));
     }
 
     // 커뮤니티 게시글 생성
