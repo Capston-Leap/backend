@@ -34,7 +34,6 @@ public interface PostControllerDocs {
     ResponseEntity<PostDetailResponse> getPostDetail(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
-            CustomUserDetails userDetails,
             @RequestParam(name = "page", defaultValue = "1") int pageNum,
             @RequestParam(name = "size", defaultValue = "10") int pageSize
     );
