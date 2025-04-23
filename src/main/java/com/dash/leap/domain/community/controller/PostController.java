@@ -9,11 +9,10 @@ import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.domain.community.service.PostService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,12 +21,14 @@ public class PostController implements PostControllerDocs {
 
     private final PostService postService;
 
-    // 커뮤니티 게시글 전체 조회
+    // 커뮤니티 게시글 전체 목록 조회
     @GetMapping("/{communityId}/post")
-    public ResponseEntity<List<PostListAllResponse>> getPostAll(
-            @PathVariable Long communityId
+    public ResponseEntity<Page<PostListAllResponse>> getPostAll(
+            @PathVariable Long communityId,
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
     ) {
-        return ResponseEntity.ok(postService.getPostAll(communityId));
+        return ResponseEntity.ok(postService.getPostAll(communityId, pageNum -1 , pageSize));
     }
 
     // 커뮤니티 게시글 생성

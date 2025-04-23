@@ -13,11 +13,12 @@ import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,21 +29,20 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
-    // 커뮤니티 게시글 전체 조회
+    // 커뮤니티 게시글 전체 목록 조회
     @Transactional(readOnly = true)
-    public List<PostListAllResponse> getPostAll(Long communityId) {
-        List<Post> posts = postRepository.findAllByCommunityId(communityId);
+    public Page<PostListAllResponse> getPostAll(Long communityId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Post> postPage = postRepository.findAllByCommunityId(communityId, pageable);
 
-        return posts.stream()
-                .map(post -> new PostListAllResponse(
-                        post.getId(),
-                        post.getUser().getNickname(),
-                        post.getCreatedAt().toLocalDate(),
-                        post.getTitle(),
-                        post.getContent(),
-                        commentRepository.countByPostId(post.getId())
-                ))
-                .collect(Collectors.toList());
+        return postPage.map(post -> new PostListAllResponse(
+                post.getId(),
+                post.getUser().getNickname(),
+                post.getCreatedAt().toLocalDate(),
+                post.getTitle(),
+                post.getContent(),
+                commentRepository.countByPostId(post.getId())
+        ));
     }
 
     // 커뮤니티 게시글 생성
