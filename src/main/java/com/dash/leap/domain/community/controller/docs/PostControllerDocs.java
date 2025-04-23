@@ -4,6 +4,7 @@ import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
 import com.dash.leap.domain.community.dto.response.PostListAllResponse;
+import com.dash.leap.domain.community.dto.response.PostDetailResponse;
 import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,17 @@ public interface PostControllerDocs {
     @ApiResponse(responseCode = "200", description = "게시글 전체 목록 조회 성공")
     ResponseEntity<Page<PostListAllResponse>> getPostAll(
             @PathVariable(name = "communityId") Long communityId,
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
+    );
+
+    // 커뮤니티 게시글 상세 조회
+    @Operation(summary = "게시글 상세 조회", description = "특정 게시글의 상세 정보와 댓글 목록(페이징)을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "게시글 상세 조회 성공")
+    ResponseEntity<PostDetailResponse> getPostDetail(
+            @PathVariable(name = "communityId") Long communityId,
+            @PathVariable(name = "postId") Long postId,
+            CustomUserDetails userDetails,
             @RequestParam(name = "page", defaultValue = "1") int pageNum,
             @RequestParam(name = "size", defaultValue = "10") int pageSize
     );
