@@ -1,6 +1,7 @@
 package com.dash.leap.domain.community.controller;
 
 import com.dash.leap.domain.community.controller.docs.PostControllerDocs;
+import com.dash.leap.domain.community.dto.response.PostListAllResponse;
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
@@ -8,6 +9,7 @@ import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.domain.community.service.PostService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +20,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public class PostController implements PostControllerDocs {
 
     private final PostService postService;
+
+    // 커뮤니티 게시글 전체 목록 조회
+    @GetMapping("/{communityId}/post")
+    public ResponseEntity<Page<PostListAllResponse>> getPostAll(
+            @PathVariable Long communityId,
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
+    ) {
+        return ResponseEntity.ok(postService.getPostAll(communityId, pageNum -1 , pageSize));
+    }
 
     // 커뮤니티 게시글 생성
     @PostMapping("/{communityId}/post")
