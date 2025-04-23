@@ -3,9 +3,11 @@ package com.dash.leap.domain.community.service;
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.response.PostCreateResponse;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
+import com.dash.leap.domain.community.dto.response.PostListAllResponse;
 import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.domain.community.entity.Community;
 import com.dash.leap.domain.community.entity.Post;
+import com.dash.leap.domain.community.repository.CommentRepository;
 import com.dash.leap.domain.community.repository.CommunityRepository;
 import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.user.entity.User;
@@ -14,13 +16,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
 
-    private final PostRepository postRepository;
     private final CommunityRepository communityRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+
+    // 커뮤니티 게시글 전체 조회
+    @Transactional(readOnly = true)
+    public List<PostListAllResponse> getPostAll(Long communityId) {
+        List<Post> posts = postRepository.findAllByCommunityId(communityId);
+
+        return posts.stream()
+                .map(post -> new PostListAllResponse(
+                        post.getId(),
+                        post.getUser().getNickname(),
+                        post.getCreatedAt().toLocalDate(),
+                        post.getTitle(),
+                        post.getContent(),
+                        commentRepository.countByPostId(post.getId())
+                ))
+                .collect(Collectors.toList());
+    }
 
     // 커뮤니티 게시글 생성
     @Transactional
