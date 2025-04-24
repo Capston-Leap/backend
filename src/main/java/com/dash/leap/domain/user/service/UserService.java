@@ -80,7 +80,7 @@ public class UserService {
         }
 
         String token = jwtTokenProvider.createToken(user);
-        return new LoginResponse(token);
+        return new LoginResponse(user.getId(), token);
     }
 
     @Transactional
