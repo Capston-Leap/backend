@@ -3,6 +3,7 @@ package com.dash.leap.domain.diary.controller;
 import com.dash.leap.domain.diary.controller.docs.DiaryControllerDocs;
 import com.dash.leap.domain.diary.dto.request.DiaryCreateRequest;
 import com.dash.leap.domain.diary.dto.response.DiaryCreateResponse;
+import com.dash.leap.domain.diary.dto.response.DiaryDetailResponse;
 import com.dash.leap.domain.diary.service.DiaryService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,15 @@ public class DiaryController implements DiaryControllerDocs {
 
     private final DiaryService diaryService;
 
-    // 감정 일기 생성
+    // 감정일기 상세 조회
+    @GetMapping("/{diaryId}")
+    public ResponseEntity<DiaryDetailResponse> getDiaryDetail(
+            @PathVariable Long diaryId
+    ) {
+        return ResponseEntity.ok(diaryService.getDiaryDetail(diaryId));
+    }
+
+    // 감정일기 생성
     @PostMapping
     public ResponseEntity<DiaryCreateResponse> createDiary(
             @AuthenticationPrincipal CustomUserDetails userDetails,
