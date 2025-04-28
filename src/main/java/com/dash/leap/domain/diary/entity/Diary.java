@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,6 +15,7 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
 public class Diary extends BaseEntity {
 
     @Id
@@ -25,9 +27,10 @@ public class Diary extends BaseEntity {
     private User user;
 
     @NotNull
-    private String title;
+    @Column(columnDefinition = "TEXT")
+    private String daily;
 
     @NotNull
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String memory;
 }
