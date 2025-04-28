@@ -17,10 +17,8 @@ public class Emotion {
     private Long id;
 
     @NotNull
-    @Column(name = "category")
-    private String emotionType;
+    private String category;
 
     @NotNull
-    @Column(name = "emoji")
-    private String emotionImg;
+    private String emoji;
 }
