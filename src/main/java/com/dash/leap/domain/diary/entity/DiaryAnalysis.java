@@ -26,7 +26,7 @@ public class DiaryAnalysis {
     @JoinColumn(name = "diary_id", nullable = false)
     private Diary diary;
 
-    @OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "emotion_id", nullable = false)
     private Emotion emotion;
 

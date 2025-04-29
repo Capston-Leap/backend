@@ -16,6 +16,9 @@ public record DiaryDetailResponse(
         @Schema(description = "일기 요약 결과", example = "오늘은 즐거운 하루였다.")
         String summary,
 
+        @Schema(description = "감정 이모지 ID", example = "5")
+        Long emotionId,
+
         @Schema(description = "감정 분석 결과", example = "기쁨")
         String category,
 
