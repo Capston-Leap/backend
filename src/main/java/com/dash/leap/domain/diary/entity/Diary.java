@@ -33,4 +33,7 @@ public class Diary extends BaseEntity {
     @NotNull
     @Column(columnDefinition = "TEXT")
     private String memory;
+
+    @OneToOne(mappedBy = "diary", fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private DiaryAnalysis diaryAnalysis;
 }

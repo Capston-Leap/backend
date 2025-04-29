@@ -1,6 +1,7 @@
 package com.dash.leap.domain.diary.service;
 
 import com.dash.leap.domain.diary.dto.request.DiaryCreateRequest;
+import com.dash.leap.domain.diary.dto.response.DiaryCalendarResponse;
 import com.dash.leap.domain.diary.dto.response.DiaryCreateResponse;
 import com.dash.leap.domain.diary.dto.response.DiaryDetailResponse;
 import com.dash.leap.domain.diary.entity.Diary;
@@ -15,6 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -23,6 +27,26 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final DiaryAnalysisRepository diaryAnalysisRepository;
     private final EmotionRepository emotionRepository;
+
+    // 감정일기 월별 캘린더 조회
+    public List<DiaryCalendarResponse> getMonthlyCalendar(int year, int month) {
+        List<Diary> diaries = diaryRepository.findByYearAndMonth(year, month);
+
+        return diaries.stream()
+                .map(diary -> {
+                    DiaryAnalysis analysis = diaryAnalysisRepository.findByDiaryId(diary.getId())
+                            .orElseThrow(() -> new IllegalArgumentException("분석 결과가 없습니다."));
+                    Emotion emotion = emotionRepository.findById(analysis.getEmotion().getId())
+                            .orElseThrow(() -> new IllegalArgumentException("감정 정보가 없습니다."));
+                    return new DiaryCalendarResponse(
+                            diary.getId(),
+                            diary.getCreatedAt().toLocalDate(),
+                            emotion.getId(),
+                            emotion.getEmoji()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 
     // 감정일기 상세 조회
     public DiaryDetailResponse getDiaryDetail(Long diaryId) {
