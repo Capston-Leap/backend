@@ -1,6 +1,5 @@
 package com.dash.leap.domain.mission.exception;
 
-import com.dash.leap.domain.user.exception.InvalidChatbotTypeException;
 import com.dash.leap.global.exception.ExceptionResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(basePackages = "com.dash.leap.domain.mission")
 public class MissionExceptionHandler {
 
-    @ExceptionHandler(InvalidChatbotTypeException.class)
+    @ExceptionHandler(InvalidRecordRequestException.class)
     @ApiResponse(responseCode = "400")
     public ResponseEntity<ExceptionResponse> handleInvalidRecordRequestException(InvalidRecordRequestException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
