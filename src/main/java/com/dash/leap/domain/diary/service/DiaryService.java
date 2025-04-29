@@ -64,6 +64,7 @@ public class DiaryService {
                 diary.getDaily(),
                 diary.getMemory(),
                 diaryAnalysis.getSummary(),
+                emotion.getId(),
                 emotion.getCategory(),
                 emotion.getEmoji()
         );
