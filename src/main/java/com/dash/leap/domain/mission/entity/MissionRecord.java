@@ -50,4 +50,11 @@ public class MissionRecord {
 
     @Column(columnDefinition = "TEXT")
     private String recordEmotion;
+
+    public void writeRecord(String content, String emotion) {
+        this.recordContent = content;
+        this.recordEmotion = emotion;
+        this.status = MissionStatus.COMPLETED;
+        this.completedTime = LocalDateTime.now();
+    }
 }

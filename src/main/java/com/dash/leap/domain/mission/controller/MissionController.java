@@ -1,19 +1,19 @@
 package com.dash.leap.domain.mission.controller;
 
 import com.dash.leap.domain.mission.controller.docs.MissionControllerDocs;
+import com.dash.leap.domain.mission.dto.request.MissionRecordRequest;
 import com.dash.leap.domain.mission.dto.response.MissionAreaResponse;
+import com.dash.leap.domain.mission.dto.response.MissionRecordResponse;
 import com.dash.leap.domain.mission.dto.response.UserMissionListResponse;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
 import com.dash.leap.domain.mission.service.MissionService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -37,6 +37,16 @@ public class MissionController implements MissionControllerDocs {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         UserMissionListResponse response = missionService.getUserMissionList(userDetails.user(), status, pageNum, pageSize);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PatchMapping("/record/{userMissionId}")
+    public ResponseEntity<MissionRecordResponse> writeMissionRecord(
+            @PathVariable(name = "userMissionId") Long userMissionId,
+            @Valid @RequestBody MissionRecordRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MissionRecordResponse response = missionService.writeMissionRecord(userDetails.user(), userMissionId, request);
         return ResponseEntity.ok().body(response);
     }
 }
