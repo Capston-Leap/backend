@@ -19,4 +19,12 @@ public class MissionExceptionHandler {
         log.info("InvalidRecordRequestExceptionResponse: {}", exceptionResponse);
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
+
+    @ExceptionHandler(InvalidMissionAreaChangeException.class)
+    @ApiResponse(responseCode = "400")
+    public ResponseEntity<ExceptionResponse> handleInvalidMissionAreaChangeException(InvalidMissionAreaChangeException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
+        log.info("InvalidMissionAreaChangeExceptionResponse: {}", exceptionResponse);
+        return ResponseEntity.badRequest().body(exceptionResponse);
+    }
 }

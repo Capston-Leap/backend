@@ -7,6 +7,8 @@ import com.dash.leap.domain.mission.dto.response.MissionRecordResponse;
 import com.dash.leap.domain.mission.dto.response.UserMissionListResponse;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
 import com.dash.leap.domain.mission.service.MissionService;
+import com.dash.leap.domain.mission.dto.request.MissionAreaSettingRequest;
+import com.dash.leap.domain.mission.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,15 @@ import org.springframework.web.bind.annotation.*;
 public class MissionController implements MissionControllerDocs {
 
     private final MissionService missionService;
+
+    @PatchMapping("/area")
+    public ResponseEntity<MissionAreaSettingResponse> missionAreaSetting(
+            @Valid @RequestBody MissionAreaSettingRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MissionAreaSettingResponse settingResponse = missionService.chooseMissionArea(userDetails.user(), request);
+        return ResponseEntity.ok(settingResponse);
+    }
 
     @GetMapping("/goal")
     public ResponseEntity<MissionAreaResponse> readMissionArea(@AuthenticationPrincipal CustomUserDetails userDetails) {

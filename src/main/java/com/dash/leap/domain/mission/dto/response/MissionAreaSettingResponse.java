@@ -1,4 +1,4 @@
-package com.dash.leap.domain.user.dto.response;
+package com.dash.leap.domain.mission.dto.response;
 
 import com.dash.leap.domain.mission.entity.enums.MissionType;
 import com.dash.leap.domain.user.entity.User;

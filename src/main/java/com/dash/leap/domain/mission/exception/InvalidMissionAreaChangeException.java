@@ -1,4 +1,4 @@
-package com.dash.leap.domain.user.exception;
+package com.dash.leap.domain.mission.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

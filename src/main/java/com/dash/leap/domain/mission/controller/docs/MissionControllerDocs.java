@@ -5,6 +5,8 @@ import com.dash.leap.domain.mission.dto.response.MissionAreaResponse;
 import com.dash.leap.domain.mission.dto.response.MissionRecordResponse;
 import com.dash.leap.domain.mission.dto.response.UserMissionListResponse;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
+import com.dash.leap.domain.mission.dto.request.MissionAreaSettingRequest;
+import com.dash.leap.domain.mission.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Mission", description = "Mission API")
 public interface MissionControllerDocs {
+
+    @Operation(summary = "자립목표영역 선정", description = "자립목표영역설정을 요청합니다.")
+    @ApiResponse(description = "목표설정 성공", responseCode = "200")
+    ResponseEntity<MissionAreaSettingResponse> missionAreaSetting(
+            @Valid MissionAreaSettingRequest request,
+            CustomUserDetails userDetails
+    );
 
     @Operation(summary = "자립목표영역 조회", description = "선택한 자립목표영역 조회를 요청합니다.")
     @ApiResponse(description = "자립목표영역 조회 성공", responseCode = "200")

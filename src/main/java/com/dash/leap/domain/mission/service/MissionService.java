@@ -1,16 +1,18 @@
 package com.dash.leap.domain.mission.service;
 
+import com.dash.leap.domain.mission.dto.request.MissionAreaSettingRequest;
 import com.dash.leap.domain.mission.dto.request.MissionRecordRequest;
-import com.dash.leap.domain.mission.dto.response.MissionAreaResponse;
-import com.dash.leap.domain.mission.dto.response.MissionRecordResponse;
-import com.dash.leap.domain.mission.dto.response.UserMissionListResponse;
-import com.dash.leap.domain.mission.dto.response.UserMissionResponse;
+import com.dash.leap.domain.mission.dto.response.*;
+import com.dash.leap.domain.mission.entity.Mission;
 import com.dash.leap.domain.mission.entity.MissionRecord;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
 import com.dash.leap.domain.mission.entity.enums.MissionType;
 import com.dash.leap.domain.mission.exception.InvalidRecordRequestException;
 import com.dash.leap.domain.mission.repository.MissionRecordRepository;
+import com.dash.leap.domain.mission.repository.MissionRepository;
 import com.dash.leap.domain.user.entity.User;
+import com.dash.leap.domain.mission.exception.InvalidMissionAreaChangeException;
+import com.dash.leap.domain.user.repository.UserRepository;
 import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
 import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,7 +34,56 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MissionService {
 
-    public final MissionRecordRepository missionRecordRepository;
+    private final UserRepository userRepository;
+    private final MissionRepository missionRepository;
+    private final MissionRecordRepository missionRecordRepository;
+
+    @Transactional
+    public MissionAreaSettingResponse chooseMissionArea(User user, MissionAreaSettingRequest request) {
+
+        User findUser = findUserByIdInUserRepository(user);
+        log.info("[UserService] 자립영역 설정 시작: 사용자 ID = {}", findUser.getId());
+
+        if (findUser.getMissionType() == null) {
+            log.info("[UserService] 온보딩 진행: 초기 자립영역을 설정합니다.");
+            findUser.setMissionType(request.missionType());
+        } else {
+            log.info("[UserService] 새로운 자립영역을 설정합니다.");
+
+            if (missionRecordRepository.countByUserAndStatus(findUser, MissionStatus.ONGOING) != 0) {
+                throw new InvalidMissionAreaChangeException("현재 선택한 영역의 미션을 모두 완료해야 다른 영역을 선택할 수 있습니다.");
+            }
+
+            log.info("[UserService] 완료했던 영역을 확인합니다.");
+            List<MissionRecord> completedMissions = missionRecordRepository.findAllByUserAndStatus(findUser, MissionStatus.COMPLETED);
+            Set<MissionType> completedAreas = completedMissions.stream()
+                    .map(m -> m.getMission().getMissionType())
+                    .collect(Collectors.toSet());
+
+            if (completedAreas.contains(request.missionType())) {
+                throw new InvalidMissionAreaChangeException("이미 완료한 영역은 다시 선택할 수 없습니다.");
+            }
+
+            log.info("[UserService] 자립영역을 변경을 승인합니다: before = {}", findUser.getMissionType());
+            findUser.setMissionType(request.missionType());
+            log.info("[UserService] 자립영역 변경에 성공했습니다: after = {}", findUser.getMissionType());
+
+        }
+
+        List<Mission> missions = missionRepository.findByMissionType(request.missionType());
+
+        for (Mission mission : missions) {
+            MissionRecord userMission = MissionRecord.builder()
+                    .user(findUser)
+                    .mission(mission)
+                    .assignedTime(LocalDateTime.now())
+                    .status(MissionStatus.ONGOING)
+                    .build();
+            missionRecordRepository.save(userMission);
+        }
+
+        return MissionAreaSettingResponse.from(findUser);
+    }
 
     public MissionAreaResponse getMissionDashboard(User user) {
 
@@ -94,6 +148,11 @@ public class MissionService {
         }
 
         return MissionRecordResponse.from(userMission);
+    }
+
+    private User findUserByIdInUserRepository(User user) {
+        return userRepository.findById(user.getId())
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));
     }
 
     private MissionRecord getUserMissionOrElseThrow(Long recordId) {
