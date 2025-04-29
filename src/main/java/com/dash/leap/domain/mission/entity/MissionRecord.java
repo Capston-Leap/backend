@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,6 +19,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_mission")
 @EntityListeners(AuditingEntityListener.class)
+@SuperBuilder
 public class MissionRecord {
 
     @Id
@@ -36,7 +38,8 @@ public class MissionRecord {
     private LocalDateTime assignedTime;
 
     @Enumerated(EnumType.STRING)
-    private MissionStatus isCompleted = MissionStatus.ONGOING;
+    @Column(name = "is_completed")
+    private MissionStatus status = MissionStatus.ONGOING;
 
     @LastModifiedDate
     @Column(name = "completed_at")
@@ -47,4 +50,11 @@ public class MissionRecord {
 
     @Column(columnDefinition = "TEXT")
     private String recordEmotion;
+
+    public void writeRecord(String content, String emotion) {
+        this.recordContent = content;
+        this.recordEmotion = emotion;
+        this.status = MissionStatus.COMPLETED;
+        this.completedTime = LocalDateTime.now();
+    }
 }
