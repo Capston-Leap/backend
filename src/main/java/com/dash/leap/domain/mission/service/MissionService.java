@@ -70,12 +70,9 @@ public class MissionService {
     @Transactional
     public MissionRecordResponse writeMissionRecord(User user, Long recordId, MissionRecordRequest request) {
 
-        MissionRecord userMission = missionRecordRepository.findById(recordId)
-                .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
+        MissionRecord userMission = getUserMissionOrElseThrow(recordId);
 
-        if (!userMission.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("해당 미션에 접근할 권한이 없습니다.");
-        }
+        verifyMissionOwner(user, userMission);
 
         if (userMission.getStatus() == MissionStatus.COMPLETED) {
             throw new InvalidRecordRequestException("이미 완료된 미션은 수행일지를 작성할 수 없습니다.");
@@ -84,5 +81,29 @@ public class MissionService {
         userMission.writeRecord(request.content(), request.emotion());
 
         return MissionRecordResponse.from(userMission);
+    }
+
+    public MissionRecordResponse readMissionRecord(User user, Long recordId) {
+
+        MissionRecord userMission = getUserMissionOrElseThrow(recordId);
+
+        verifyMissionOwner(user, userMission);
+
+        if (userMission.getStatus() == MissionStatus.ONGOING) {
+            throw new InvalidRecordRequestException("진행 중인 미션입니다.(수행일지 작성 전)");
+        }
+
+        return MissionRecordResponse.from(userMission);
+    }
+
+    private MissionRecord getUserMissionOrElseThrow(Long recordId) {
+        return missionRecordRepository.findById(recordId)
+                .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
+    }
+
+    private void verifyMissionOwner(User user, MissionRecord userMission) {
+        if (!userMission.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("해당 미션에 접근할 권한이 없습니다.");
+        }
     }
 }

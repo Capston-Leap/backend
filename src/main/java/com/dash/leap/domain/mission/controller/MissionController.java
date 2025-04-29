@@ -49,4 +49,13 @@ public class MissionController implements MissionControllerDocs {
         MissionRecordResponse response = missionService.writeMissionRecord(userDetails.user(), userMissionId, request);
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/record/{userMissionId}")
+    public ResponseEntity<MissionRecordResponse> readMissionRecord(
+            @PathVariable(name = "userMissionId") Long userMissionId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MissionRecordResponse response = missionService.readMissionRecord(userDetails.user(), userMissionId);
+        return ResponseEntity.ok().body(response);
+    }
 }

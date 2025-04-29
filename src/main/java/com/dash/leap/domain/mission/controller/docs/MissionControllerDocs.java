@@ -39,4 +39,11 @@ public interface MissionControllerDocs {
             @Valid MissionRecordRequest request,
             CustomUserDetails userDetails
     );
+
+    @Operation(summary = "미션 수행 일지 조회", description = "완료된 미션의 수행일지를 조회합니다.")
+    @ApiResponse(description = "조회 성공", responseCode = "200")
+    ResponseEntity<MissionRecordResponse> readMissionRecord(
+            @PathVariable(name = "userMissionId") Long userMissionId,
+            CustomUserDetails userDetails
+    );
 }
