@@ -16,6 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,6 +76,15 @@ public class DiaryService {
     // 감정일기 생성
     public DiaryCreateResponse createDiary(CustomUserDetails userDetails, DiaryCreateRequest request) {
         User user = userDetails.user();
+
+        LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfToday = LocalDate.now().atTime(LocalTime.MAX);
+
+        boolean exists = diaryRepository.existsByUserAndCreatedAtBetween(user, startOfToday, endOfToday);
+
+        if (exists) {
+            throw new IllegalStateException("오늘은 이미 감정일기를 작성하셨습니다.");
+        }
 
         Diary diary = Diary.builder()
                 .user(user)
