@@ -1,12 +1,9 @@
 package com.dash.leap.domain.mission.controller.docs;
 
 import com.dash.leap.domain.mission.dto.request.MissionRecordRequest;
-import com.dash.leap.domain.mission.dto.response.MissionAreaResponse;
-import com.dash.leap.domain.mission.dto.response.MissionRecordResponse;
-import com.dash.leap.domain.mission.dto.response.UserMissionListResponse;
+import com.dash.leap.domain.mission.dto.response.*;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
 import com.dash.leap.domain.mission.dto.request.MissionAreaSettingRequest;
-import com.dash.leap.domain.mission.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,6 +35,13 @@ public interface MissionControllerDocs {
             @RequestParam(name = "status") MissionStatus status,
             @RequestParam(name = "page", defaultValue = "0") int pageNum,
             @RequestParam(name = "size", defaultValue = "5") int pageSize,
+            CustomUserDetails userDetails
+    );
+
+    @Operation(summary = "미션 상세 조회", description = "해당 미션에 대한 상세 내용 조회를 요청합니다.")
+    @ApiResponse(description = "조회 성공", responseCode = "200")
+    ResponseEntity<MissionDetailResponse> readMissionDetail(
+            @PathVariable(name = "missionId") Long missionId,
             CustomUserDetails userDetails
     );
 

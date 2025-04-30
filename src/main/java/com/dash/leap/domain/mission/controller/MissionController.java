@@ -2,13 +2,10 @@ package com.dash.leap.domain.mission.controller;
 
 import com.dash.leap.domain.mission.controller.docs.MissionControllerDocs;
 import com.dash.leap.domain.mission.dto.request.MissionRecordRequest;
-import com.dash.leap.domain.mission.dto.response.MissionAreaResponse;
-import com.dash.leap.domain.mission.dto.response.MissionRecordResponse;
-import com.dash.leap.domain.mission.dto.response.UserMissionListResponse;
+import com.dash.leap.domain.mission.dto.response.*;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
 import com.dash.leap.domain.mission.service.MissionService;
 import com.dash.leap.domain.mission.dto.request.MissionAreaSettingRequest;
-import com.dash.leap.domain.mission.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +45,15 @@ public class MissionController implements MissionControllerDocs {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         UserMissionListResponse response = missionService.getUserMissionList(userDetails.user(), status, pageNum, pageSize);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{missionId}")
+    public ResponseEntity<MissionDetailResponse> readMissionDetail(
+            @PathVariable(name = "missionId") Long missionId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MissionDetailResponse response = missionService.getMissionDetail(userDetails.user(), missionId);
         return ResponseEntity.ok().body(response);
     }
 

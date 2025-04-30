@@ -27,4 +27,12 @@ public class MissionExceptionHandler {
         log.info("InvalidMissionAreaChangeExceptionResponse: {}", exceptionResponse);
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
+
+    @ExceptionHandler(ForbiddenAccessMissionDetailException.class)
+    @ApiResponse(responseCode = "403")
+    public ResponseEntity<ExceptionResponse> handleForbiddenAccessMissionDetailException(ForbiddenAccessMissionDetailException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.FORBIDDEN.toString(), e.getMessage());
+        log.info("ForbiddenAccessMissionDetailExceptionResponse: {}", exceptionResponse);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse);
+    }
 }

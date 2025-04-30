@@ -5,11 +5,14 @@ import com.dash.leap.domain.mission.dto.request.MissionRecordRequest;
 import com.dash.leap.domain.mission.dto.response.*;
 import com.dash.leap.domain.mission.entity.Mission;
 import com.dash.leap.domain.mission.entity.MissionRecord;
+import com.dash.leap.domain.mission.entity.MissionStep;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
 import com.dash.leap.domain.mission.entity.enums.MissionType;
+import com.dash.leap.domain.mission.exception.ForbiddenAccessMissionDetailException;
 import com.dash.leap.domain.mission.exception.InvalidRecordRequestException;
 import com.dash.leap.domain.mission.repository.MissionRecordRepository;
 import com.dash.leap.domain.mission.repository.MissionRepository;
+import com.dash.leap.domain.mission.repository.MissionStepRepository;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.mission.exception.InvalidMissionAreaChangeException;
 import com.dash.leap.domain.user.repository.UserRepository;
@@ -37,6 +40,7 @@ public class MissionService {
     private final UserRepository userRepository;
     private final MissionRepository missionRepository;
     private final MissionRecordRepository missionRecordRepository;
+    private final MissionStepRepository missionStepRepository;
 
     @Transactional
     public MissionAreaSettingResponse chooseMissionArea(User user, MissionAreaSettingRequest request) {
@@ -119,6 +123,23 @@ public class MissionService {
 
             return new UserMissionListResponse(responseList, slice.hasNext());
         }
+    }
+
+    public MissionDetailResponse getMissionDetail(User user, Long missionId) {
+
+        Mission mission = missionRepository.findById(missionId)
+                .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
+
+        if (!missionRecordRepository.existsByUserIdAndMissionId(user.getId(), mission.getId())) {
+            throw new ForbiddenAccessMissionDetailException("해당 미션에 접근할 수 없습니다: 미션을 부여받은 적이 없음");
+        }
+
+        List<MissionStep> steps = missionStepRepository.findByMissionIdOrderByStepAsc(mission.getId());
+        List<MissionStepResponse> stepResponse = steps.stream()
+                .map(MissionStepResponse::from)
+                .toList();
+
+        return new MissionDetailResponse(mission.getId(), mission.getTitle(), mission.getDescription(), stepResponse);
     }
 
     @Transactional

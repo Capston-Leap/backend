@@ -36,4 +36,6 @@ public interface MissionRecordRepository extends JpaRepository<MissionRecord, Lo
     Slice<MissionRecord> findAllByUserAndStatusOrderByCompletedTimeDesc(User user, MissionStatus missionStatus, Pageable pageable);
 
     long countByUserAndStatus(User user, MissionStatus status);
+
+    boolean existsByUserIdAndMissionId(Long userId, Long missionId);
 }
