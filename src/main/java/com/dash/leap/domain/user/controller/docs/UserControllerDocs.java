@@ -5,6 +5,7 @@ import com.dash.leap.domain.user.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
 import com.dash.leap.domain.user.dto.response.LoginResponse;
+import com.dash.leap.domain.user.dto.response.MyPageResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +34,12 @@ public interface UserControllerDocs {
     @ApiResponse(description = "설정 성공", responseCode = "200")
     ResponseEntity<ChatbotSettingResponse> chatbotSetting(
             @Valid ChatbotSettingRequest request,
+            CustomUserDetails userDetails
+    );
+
+    @Operation(summary = "마이페이지 조회", description = "마이페이지 조회를 요청합니다.")
+    @ApiResponse(description = "조회 성공", responseCode = "200")
+    ResponseEntity<MyPageResponse> readMyPage(
             CustomUserDetails userDetails
     );
 
