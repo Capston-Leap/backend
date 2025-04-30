@@ -47,7 +47,6 @@ public class User {
     @Column(name = "registered_at", updatable = false)
     private LocalDateTime registerTime;
 
-    @Setter(AccessLevel.PUBLIC)
     @Column(name = "chatbot")
     @Enumerated(EnumType.STRING)
     private ChatbotType chatbotType;
@@ -62,4 +61,8 @@ public class User {
     @Column(name = "class")
     @Enumerated(EnumType.STRING)
     private UserType userType = UserType.USER;
+
+    public void chooseChatbot(ChatbotType chatbotType) {
+        this.chatbotType = chatbotType;
+    }
 }
