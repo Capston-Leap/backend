@@ -9,8 +9,8 @@ import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
 import com.dash.leap.domain.user.dto.response.LoginResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.entity.User;
-import com.dash.leap.domain.user.entity.enums.ChatbotType;
 import com.dash.leap.domain.user.entity.enums.UserType;
+import com.dash.leap.domain.user.exception.InvalidChatbotException;
 import com.dash.leap.domain.user.repository.UserRepository;
 import com.dash.leap.global.auth.jwt.exception.DuplicateLoginIdException;
 import com.dash.leap.global.auth.jwt.exception.PasswordMismatchException;
@@ -51,7 +51,6 @@ public class UserService {
                 .name(request.name())
                 .nickname(request.nickname())
                 .birth(request.birth())
-                .chatbotType(ChatbotType.FF) // TODO: 수정 필요
                 .userType(UserType.USER)
                 .level(1)
                 .build();
@@ -83,9 +82,16 @@ public class UserService {
 
     @Transactional
     public ChatbotSettingResponse leapySetting(User user, ChatbotSettingRequest request) {
-        ChatbotType requestChatbotType = request.toChatbotType();
-        user.setChatbotType(requestChatbotType);
-        return ChatbotSettingResponse.from(user);
+        User findUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));
+
+        log.info("[UserService] 온보딩: 챗봇(리피) 설정을 시작합니다.");
+        if (findUser.getChatbotType() != null) {
+            throw new InvalidChatbotException("이미 챗봇이 설정된 사용자입니다.");
+        }
+
+        findUser.chooseChatbot(request.toChatbotType());
+        return ChatbotSettingResponse.from(findUser);
     }
 
     @Transactional

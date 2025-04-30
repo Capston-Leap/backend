@@ -1,7 +1,7 @@
 package com.dash.leap.domain.user.dto.request;
 
 import com.dash.leap.domain.user.entity.enums.ChatbotType;
-import com.dash.leap.domain.user.exception.InvalidChatbotTypeException;
+import com.dash.leap.domain.user.exception.InvalidChatbotException;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "온보딩 시 리피 설정 요청입니다.")
@@ -18,7 +18,7 @@ public record ChatbotSettingRequest(
         try {
             return ChatbotType.valueOf(gender + character);
         } catch (IllegalArgumentException e) {
-            throw new InvalidChatbotTypeException("유효하지 않은 챗봇 유형입니다: " + gender + character);
+            throw new InvalidChatbotException("유효하지 않은 챗봇 유형입니다: " + gender + character);
         }
     }
 }

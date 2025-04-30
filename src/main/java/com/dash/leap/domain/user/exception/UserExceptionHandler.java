@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(basePackages = "com.dash.leap.domain.user")
 public class UserExceptionHandler {
 
-    @ExceptionHandler(InvalidChatbotTypeException.class)
+    @ExceptionHandler(InvalidChatbotException.class)
     @ApiResponse(responseCode = "400")
-    public ResponseEntity<ExceptionResponse> handleInvalidChatbotTypeException(InvalidChatbotTypeException e) {
+    public ResponseEntity<ExceptionResponse> handleInvalidChatbotTypeException(InvalidChatbotException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
         log.info("InvalidChatbotTypeExceptionResponse: {}", exceptionResponse);
         return ResponseEntity.badRequest().body(exceptionResponse);
