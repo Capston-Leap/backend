@@ -14,7 +14,6 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(InvalidChatbotTypeException.class)
     @ApiResponse(responseCode = "400")
-
     public ResponseEntity<ExceptionResponse> handleInvalidChatbotTypeException(InvalidChatbotTypeException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
         log.info("InvalidChatbotTypeExceptionResponse: {}", exceptionResponse);

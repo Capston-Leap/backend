@@ -4,11 +4,9 @@ import com.dash.leap.domain.chat.entity.Chat;
 import com.dash.leap.domain.chat.repository.ChatRepository;
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
 import com.dash.leap.domain.user.dto.request.LoginRequest;
-import com.dash.leap.domain.user.dto.request.MissionAreaSettingRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
 import com.dash.leap.domain.user.dto.response.LoginResponse;
-import com.dash.leap.domain.user.dto.response.MissionAreaSettingResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.entity.enums.ChatbotType;
@@ -88,12 +86,6 @@ public class UserService {
         ChatbotType requestChatbotType = request.toChatbotType();
         user.setChatbotType(requestChatbotType);
         return ChatbotSettingResponse.from(user);
-    }
-
-    @Transactional
-    public MissionAreaSettingResponse missionSetting(User user, MissionAreaSettingRequest request) {
-        user.setMissionType(request.missionType());
-        return MissionAreaSettingResponse.from(user);
     }
 
     @Transactional

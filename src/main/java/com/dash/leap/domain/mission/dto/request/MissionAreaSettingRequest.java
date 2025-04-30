@@ -1,4 +1,4 @@
-package com.dash.leap.domain.user.dto.request;
+package com.dash.leap.domain.mission.dto.request;
 
 import com.dash.leap.domain.mission.entity.enums.MissionType;
 import io.swagger.v3.oas.annotations.media.Schema;
