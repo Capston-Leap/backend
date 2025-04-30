@@ -2,11 +2,15 @@ package com.dash.leap.domain.user.service;
 
 import com.dash.leap.domain.chat.entity.Chat;
 import com.dash.leap.domain.chat.repository.ChatRepository;
+import com.dash.leap.domain.community.repository.PostRepository;
+import com.dash.leap.domain.mission.entity.enums.MissionStatus;
+import com.dash.leap.domain.mission.repository.MissionRecordRepository;
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
 import com.dash.leap.domain.user.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
 import com.dash.leap.domain.user.dto.response.LoginResponse;
+import com.dash.leap.domain.user.dto.response.MyPageResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.entity.enums.UserType;
@@ -33,6 +37,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final ChatRepository chatRepository;
+    private final MissionRecordRepository missionRecordRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public UserRegisterResponse register(UserRegisterRequest request) {
@@ -92,6 +98,15 @@ public class UserService {
 
         findUser.chooseChatbot(request.toChatbotType());
         return ChatbotSettingResponse.from(findUser);
+    }
+
+    public MyPageResponse getMyPage(User user) {
+
+        long ongoingMissionCount = missionRecordRepository.countByUserAndStatus(user, MissionStatus.ONGOING);
+        long completedMissionCount = missionRecordRepository.countByUserAndStatus(user, MissionStatus.COMPLETED);
+        long postCount = postRepository.countByUser(user);
+
+        return new MyPageResponse(user.getName(), user.getLoginId(), ongoingMissionCount, completedMissionCount, postCount);
     }
 
     @Transactional
