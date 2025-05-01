@@ -82,7 +82,7 @@ public class PostService {
         );
     }
 
-    // 마이페이지 - 본인이 작성한 커뮤니티 게시글 전체 목록 조회
+    // 마이페이지 - 본인이 작성한 커뮤니티 게시글 목록 조회
     @Transactional(readOnly = true)
     public Page<PostListAllResponse> getMyPostAll(Long communityId, CustomUserDetails userDetails, int page, int size) {
         Long userId = userDetails.user().getId();

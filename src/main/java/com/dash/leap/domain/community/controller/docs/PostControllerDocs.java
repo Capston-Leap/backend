@@ -39,7 +39,7 @@ public interface PostControllerDocs {
             @RequestParam(name = "size", defaultValue = "10") int pageSize
     );
 
-    // 마이페이지 - 본인이 작성한 커뮤니티 게시글 전체 목록 조회
+    // 마이페이지 - 본인이 작성한 커뮤니티 게시글 목록 조회
     @Operation(
             summary = "마이페이지 - 본인이 작성한 게시글 전체 목록 조회",
             description = "해당 커뮤니티에서 로그인한 사용자가 작성한 게시글 목록을 조회합니다."
