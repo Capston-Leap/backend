@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByCommunityId(Long communityId, Pageable pageable);
+    Page<Post> findAllByCommunityIdAndUserId(Long communityId, Long userId, Pageable pageable);
 
     long countByUser(User user);
 }

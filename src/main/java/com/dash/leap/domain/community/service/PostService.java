@@ -82,6 +82,24 @@ public class PostService {
         );
     }
 
+    // 마이페이지 - 본인이 작성한 커뮤니티 게시글 전체 목록 조회
+    @Transactional(readOnly = true)
+    public Page<PostListAllResponse> getMyPostAll(Long communityId, CustomUserDetails userDetails, int page, int size) {
+        Long userId = userDetails.user().getId();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Post> postPage = postRepository.findAllByCommunityIdAndUserId(communityId, userId, pageable);
+
+        return postPage.map(post -> new PostListAllResponse(
+                post.getId(),
+                post.getUser().getNickname(),
+                post.getCreatedAt().toLocalDate(),
+                post.getTitle(),
+                post.getContent(),
+                commentRepository.countByPostId(post.getId())
+        ));
+    }
+
     // 커뮤니티 게시글 생성
     @Transactional
     public PostCreateResponse create(Long communityId, CustomUserDetails userDetails, PostCreateRequest request) {

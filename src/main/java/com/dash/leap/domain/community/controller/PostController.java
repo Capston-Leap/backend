@@ -43,6 +43,19 @@ public class PostController implements PostControllerDocs {
         return ResponseEntity.ok(postService.getPostDetail(communityId, postId, pageNum - 1, pageSize));
     }
 
+    // 마이페이지 - 본인이 작성한 커뮤니티 게시글 전체 목록 조회
+    @GetMapping("/{communityId}/mypost")
+    public ResponseEntity<Page<PostListAllResponse>> getMyPostsInCommunity(
+            @PathVariable Long communityId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
+    ) {
+        return ResponseEntity.ok(
+                postService.getMyPostAll(communityId, userDetails, pageNum - 1, pageSize)
+        );
+    }
+
     // 커뮤니티 게시글 생성
     @PostMapping("/{communityId}/post")
     public ResponseEntity<PostCreateResponse> createPost(
