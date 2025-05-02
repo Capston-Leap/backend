@@ -59,7 +59,7 @@ public class DiaryService {
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 감정일기입니다."));
 
         DiaryAnalysis diaryAnalysis = diaryAnalysisRepository.findByDiaryId(diaryId)
-                .orElseThrow(() -> new NotFoundException("해당 일기에 대한 분석 결과가 없습니다."));
+                .orElseThrow(() -> new NotFoundException("해당 분석 결과가 없습니다."));
 
         Emotion emotion = emotionRepository.findById(diaryAnalysis.getEmotion().getId())
                 .orElseThrow(() -> new NotFoundException("해당 감정 정보가 없습니다."));
