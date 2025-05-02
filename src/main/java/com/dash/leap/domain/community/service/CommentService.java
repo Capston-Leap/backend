@@ -4,10 +4,14 @@ import com.dash.leap.domain.community.dto.request.CommentCreateRequest;
 import com.dash.leap.domain.community.dto.response.CommentCreateResponse;
 import com.dash.leap.domain.community.entity.Post;
 import com.dash.leap.domain.community.entity.Comment;
+import com.dash.leap.domain.community.exception.BadRequestException;
+import com.dash.leap.domain.community.exception.ForbiddenException;
+import com.dash.leap.domain.community.repository.CommunityRepository;
 import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.community.repository.CommentRepository;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.global.auth.user.CustomUserDetails;
+import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CommentService {
 
+    private final CommunityRepository communityRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
@@ -25,11 +30,14 @@ public class CommentService {
     public CommentCreateResponse create(Long communityId, Long postId, CustomUserDetails userDetails, CommentCreateRequest request) {
         User user = userDetails.user();
 
+        communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
+
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글입니다."));
 
         if (!post.getCommunity().getId().equals(communityId)) {
-            throw new IllegalArgumentException("해당 커뮤니티에 속한 게시글이 아닙니다.");
+            throw new BadRequestException("해당 커뮤니티에 속한 게시글이 아닙니다.");
         }
 
         Comment comment = Comment.builder()
@@ -53,19 +61,19 @@ public class CommentService {
         User user = userDetails.user();
 
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 댓글입니다."));
 
         Post post = comment.getPost();
         if (!post.getId().equals(postId)) {
-            throw new IllegalArgumentException("해당 댓글은 요청한 게시글에 속하지 않습니다.");
+            throw new BadRequestException("해당 댓글은 요청한 게시글에 속하지 않습니다.");
         }
 
         if (!post.getCommunity().getId().equals(communityId)) {
-            throw new IllegalArgumentException("해당 게시글은 요청한 커뮤니티에 속하지 않습니다.");
+            throw new BadRequestException("해당 게시글은 요청한 커뮤니티에 속하지 않습니다.");
         }
 
         if (!comment.getUser().getId().equals(user.getId())) {
-            throw new IllegalStateException("댓글 작성자만 삭제할 수 있습니다.");
+            throw new ForbiddenException("댓글 작성자만 삭제할 수 있습니다.");
         }
 
         commentRepository.delete(comment);
