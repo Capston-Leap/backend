@@ -7,11 +7,13 @@ import com.dash.leap.domain.diary.dto.response.DiaryDetailResponse;
 import com.dash.leap.domain.diary.entity.Diary;
 import com.dash.leap.domain.diary.entity.DiaryAnalysis;
 import com.dash.leap.domain.diary.entity.Emotion;
+import com.dash.leap.domain.diary.exception.ConflictException;
 import com.dash.leap.domain.diary.repository.DiaryRepository;
 import com.dash.leap.domain.diary.repository.DiaryAnalysisRepository;
 import com.dash.leap.domain.diary.repository.EmotionRepository;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.global.auth.user.CustomUserDetails;
+import com.dash.leap.global.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,9 +40,9 @@ public class DiaryService {
         return diaries.stream()
                 .map(diary -> {
                     DiaryAnalysis analysis = diaryAnalysisRepository.findByDiaryId(diary.getId())
-                            .orElseThrow(() -> new IllegalArgumentException("분석 결과가 없습니다."));
+                            .orElseThrow(() -> new NotFoundException("분석 결과가 없습니다."));
                     Emotion emotion = emotionRepository.findById(analysis.getEmotion().getId())
-                            .orElseThrow(() -> new IllegalArgumentException("감정 정보가 없습니다."));
+                            .orElseThrow(() -> new NotFoundException("감정 정보가 없습니다."));
                     return new DiaryCalendarResponse(
                             diary.getId(),
                             diary.getCreatedAt().toLocalDate(),
@@ -54,13 +56,13 @@ public class DiaryService {
     // 감정일기 상세 조회
     public DiaryDetailResponse getDiaryDetail(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 감정일기입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 감정일기입니다."));
 
         DiaryAnalysis diaryAnalysis = diaryAnalysisRepository.findByDiaryId(diaryId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 일기에 대한 분석 결과가 없습니다."));
+                .orElseThrow(() -> new NotFoundException("해당 일기에 대한 분석 결과가 없습니다."));
 
         Emotion emotion = emotionRepository.findById(diaryAnalysis.getEmotion().getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 감정 정보가 없습니다."));
+                .orElseThrow(() -> new NotFoundException("해당 감정 정보가 없습니다."));
 
         return new DiaryDetailResponse(
                 diary.getId(),
@@ -83,7 +85,7 @@ public class DiaryService {
         boolean exists = diaryRepository.existsByUserAndCreatedAtBetween(user, startOfToday, endOfToday);
 
         if (exists) {
-            throw new IllegalStateException("오늘은 이미 감정일기를 작성하셨습니다.");
+            throw new ConflictException("오늘은 이미 감정일기를 작성하셨습니다.");
         }
 
         Diary diary = Diary.builder()
