@@ -144,7 +144,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
 
         if (!post.getCommunity().getId().equals(communityId)) {
-            throw new BadRequestException("요청한 커뮤니티에 해당 게시글이 존재하지 않습니다.");
+            throw new BadRequestException("해당 커뮤니티에 속한 게시글이 아닙니다.");
         }
 
         if (!post.getUser().getId().equals(user.getId())) {

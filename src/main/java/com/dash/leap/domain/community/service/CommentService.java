@@ -64,12 +64,13 @@ public class CommentService {
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 댓글입니다."));
 
         Post post = comment.getPost();
-        if (!post.getId().equals(postId)) {
-            throw new BadRequestException("해당 댓글은 요청한 게시글에 속하지 않습니다.");
-        }
 
         if (!post.getCommunity().getId().equals(communityId)) {
-            throw new BadRequestException("해당 게시글은 요청한 커뮤니티에 속하지 않습니다.");
+            throw new BadRequestException("해당 커뮤니티에 속한 게시글이 아닙니다.");
+        }
+
+        if (!post.getId().equals(postId)) {
+            throw new BadRequestException("해당 게시글에 속한 댓글이 아닙니다.");
         }
 
         if (!comment.getUser().getId().equals(user.getId())) {
