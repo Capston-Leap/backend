@@ -9,12 +9,15 @@ import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.domain.community.entity.Comment;
 import com.dash.leap.domain.community.entity.Community;
 import com.dash.leap.domain.community.entity.Post;
+import com.dash.leap.domain.community.exception.ForbiddenException;
 import com.dash.leap.domain.community.repository.CommentRepository;
 import com.dash.leap.domain.community.repository.CommunityRepository;
 import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.global.auth.user.CustomUserDetails;
+import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import com.dash.leap.domain.community.exception.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +37,9 @@ public class PostService {
     // 커뮤니티 게시글 전체 목록 조회
     @Transactional(readOnly = true)
     public Page<PostListAllResponse> getPostAll(Long communityId, int page, int size) {
+        communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> postPage = postRepository.findAllByCommunityId(communityId, pageable);
 
@@ -51,10 +57,10 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostDetailResponse getPostDetail(Long communityId, Long postId, int page, int size) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글입니다."));
 
         if (!post.getCommunity().getId().equals(communityId)) {
-            throw new IllegalStateException("해당 커뮤니티에 속한 게시글이 아닙니다.");
+            throw new BadRequestException("해당 커뮤니티에 속한 게시글이 아닙니다.");
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -85,7 +91,11 @@ public class PostService {
     // 마이페이지 - 본인이 작성한 커뮤니티 게시글 목록 조회
     @Transactional(readOnly = true)
     public Page<PostListAllResponse> getMyPostAll(Long communityId, CustomUserDetails userDetails, int page, int size) {
+
         Long userId = userDetails.user().getId();
+
+        communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> postPage = postRepository.findAllByCommunityIdAndUserId(communityId, userId, pageable);
@@ -106,7 +116,7 @@ public class PostService {
         User user = userDetails.user();
 
         Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 커뮤니티입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
 
         Post post = Post.builder()
                 .user(user)
@@ -131,14 +141,14 @@ public class PostService {
         User user = userDetails.user();
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
 
         if (!post.getCommunity().getId().equals(communityId)) {
-            throw new IllegalStateException("요청한 커뮤니티에 해당 게시글이 존재하지 않습니다.");
+            throw new BadRequestException("요청한 커뮤니티에 해당 게시글이 존재하지 않습니다.");
         }
 
         if (!post.getUser().getId().equals(user.getId())) {
-            throw new IllegalStateException("게시글 작성자만 수정할 수 있습니다.");
+            throw new ForbiddenException("게시글 작성자만 수정할 수 있습니다.");
         }
 
         post.update(request.title(), request.content());
@@ -157,14 +167,14 @@ public class PostService {
         User user = userDetails.user();
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글입니다."));
 
         if (!post.getCommunity().getId().equals(communityId)) {
-            throw new IllegalStateException("해당 커뮤니티에 속한 게시글이 아닙니다.");
+            throw new BadRequestException("해당 커뮤니티에 속한 게시글이 아닙니다.");
         }
 
         if (!post.getUser().getId().equals(user.getId())) {
-            throw new IllegalStateException("게시글 작성자만 삭제할 수 있습니다.");
+            throw new ForbiddenException("게시글 작성자만 삭제할 수 있습니다.");
         }
 
         postRepository.delete(post);
