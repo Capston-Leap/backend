@@ -88,8 +88,7 @@ public class UserService {
 
     @Transactional
     public ChatbotSettingResponse leapySetting(User user, ChatbotSettingRequest request) {
-        User findUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));
+        User findUser = findUserByIdOrElseThrow(user);
 
         log.info("[UserService] 온보딩: 챗봇(리피) 설정을 시작합니다.");
         if (findUser.getChatbotType() != null) {
@@ -118,10 +117,16 @@ public class UserService {
     @Transactional
     public void withdraw(User user) {
         log.warn("회원탈퇴 요청: userId = {}", user.getId());
-        userRepository.delete(user);
+        User findUser = findUserByIdOrElseThrow(user);
+        findUser.changeUserStatus(true);
     }
 
     public boolean checkLoginIdDuplicate(String loginId) {
         return userRepository.existsByLoginId(loginId);
+    }
+
+    private User findUserByIdOrElseThrow(User user) {
+        return userRepository.findById(user.getId())
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));
     }
 }
