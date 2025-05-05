@@ -75,8 +75,13 @@ public class UserService {
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
+
         User user = userRepository.findByLoginId(request.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않은 아이디입니다."));
+
+        if (user.isDeleted()) {
+            throw new UnauthorizedException("탈퇴한 회원은 로그인할 수 없습니다.");
+        }
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");

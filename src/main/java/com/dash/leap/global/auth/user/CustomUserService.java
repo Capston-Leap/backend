@@ -15,6 +15,11 @@ public class CustomUserService {
     public CustomUserDetails loadUserById(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UnauthorizedException("유효하지 않은 사용자입니다."));
+
+        if (user.isDeleted()) {
+            throw new UnauthorizedException("탈퇴한 회원입니다.");
+        }
+
         return new CustomUserDetails(user);
     }
 

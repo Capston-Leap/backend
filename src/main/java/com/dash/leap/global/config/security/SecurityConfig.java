@@ -41,7 +41,7 @@ public class SecurityConfig {
                         )
                         .permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserService, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(getAuthenticationEntryPoint()))
