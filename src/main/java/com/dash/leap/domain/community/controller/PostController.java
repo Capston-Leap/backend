@@ -25,7 +25,7 @@ public class PostController implements PostControllerDocs {
     // 커뮤니티 게시글 전체 목록 조회
     @GetMapping("/{communityId}/post")
     public ResponseEntity<Page<PostListAllResponse>> getPostAll(
-            @PathVariable Long communityId,
+            @PathVariable(name = "communityId") Long communityId,
             @RequestParam(name = "page", defaultValue = "1") int pageNum,
             @RequestParam(name = "size", defaultValue = "10") int pageSize
     ) {
@@ -35,8 +35,8 @@ public class PostController implements PostControllerDocs {
     // 커뮤니티 게시글 상세 조회
     @GetMapping("/{communityId}/post/{postId}")
     public ResponseEntity<PostDetailResponse> getPostDetail(
-            @PathVariable Long communityId,
-            @PathVariable Long postId,
+            @PathVariable(name = "communityId") Long communityId,
+            @PathVariable(name = "postId") Long postId,
             @RequestParam(name = "page", defaultValue = "1") int pageNum,
             @RequestParam(name = "size", defaultValue = "10") int pageSize
     ) {
@@ -46,7 +46,7 @@ public class PostController implements PostControllerDocs {
     // 마이페이지 - 본인이 작성한 커뮤니티 게시글 목록 조회
     @GetMapping("/{communityId}/mypost")
     public ResponseEntity<Page<PostListAllResponse>> getMyPostsInCommunity(
-            @PathVariable Long communityId,
+            @PathVariable(name = "communityId") Long communityId,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(name = "page", defaultValue = "1") int pageNum,
             @RequestParam(name = "size", defaultValue = "10") int pageSize
@@ -82,8 +82,8 @@ public class PostController implements PostControllerDocs {
     // 커뮤니티 게시글 삭제
     @DeleteMapping("/{communityId}/post/{postId}")
     public ResponseEntity<Void> deletePost(
-            @PathVariable Long communityId,
-            @PathVariable Long postId,
+            @PathVariable(name = "communityId") Long communityId,
+            @PathVariable(name = "postId") Long postId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         postService.delete(communityId, postId, userDetails);
