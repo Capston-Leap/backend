@@ -37,9 +37,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**", // Swagger 접근 허용
-                                "/user/register", "/user/register/**", "/user/login" // 회원가입, 로그인 시 접근 허용
+                                "/user/register", "/user/register/**", "/user/login", // 회원가입, 로그인 시 접근 허용
+                                "/admin/register" // 관리자 회원가입 시 접근 허용
                         )
                         .permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserService, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractAuthenticationFilterConfigurer::disable)
