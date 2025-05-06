@@ -4,6 +4,8 @@ import com.dash.leap.admin.user.controller.docs.AdminAuthControllerDocs;
 import com.dash.leap.admin.user.dto.request.AdminRegisterRequest;
 import com.dash.leap.admin.user.dto.response.AdminRegisterResponse;
 import com.dash.leap.admin.user.service.AdminAuthService;
+import com.dash.leap.global.auth.dto.request.LoginRequest;
+import com.dash.leap.global.auth.dto.response.LoginResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,5 +29,11 @@ public class AdminAuthController implements AdminAuthControllerDocs {
     public ResponseEntity<AdminRegisterResponse> register(@RequestBody @Valid AdminRegisterRequest request) {
         AdminRegisterResponse response = adminAuthService.register(request);
         return ResponseEntity.status(CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        LoginResponse response = adminAuthService.login(request);
+        return ResponseEntity.ok(response);
     }
 }

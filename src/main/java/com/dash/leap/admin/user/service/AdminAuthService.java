@@ -5,7 +5,12 @@ import com.dash.leap.admin.user.dto.response.AdminRegisterResponse;
 import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.entity.enums.UserType;
 import com.dash.leap.domain.user.repository.UserRepository;
+import com.dash.leap.global.auth.dto.request.LoginRequest;
+import com.dash.leap.global.auth.dto.response.LoginResponse;
 import com.dash.leap.global.auth.jwt.exception.DuplicateLoginIdException;
+import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
+import com.dash.leap.global.auth.jwt.service.JwtTokenProvider;
+import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +25,7 @@ public class AdminAuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public AdminRegisterResponse register(AdminRegisterRequest request) {
@@ -42,4 +48,27 @@ public class AdminAuthService {
 
         return AdminRegisterResponse.from(savedAdmin);
     }
+
+    @Transactional
+    public LoginResponse login(LoginRequest request) {
+
+        User admin = userRepository.findByLoginId(request.loginId())
+                .orElseThrow(() -> new NotFoundException("존재하지 않은 아이디입니다."));
+
+        if (admin.isDeleted()) {
+            throw new UnauthorizedException("탈퇴한 관리자입니다.");
+        }
+
+        if (admin.getUserType() != UserType.ADMIN) {
+            throw new UnauthorizedException("관리자만 로그인할 수 있습니다.");
+        }
+
+        if (!passwordEncoder.matches(request.password(), admin.getPassword())) {
+            throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
+        }
+
+        String token = jwtTokenProvider.createToken(admin);
+        return new LoginResponse(admin.getId(), token);
+    }
+
 }
