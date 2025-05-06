@@ -2,10 +2,10 @@ package com.dash.leap.domain.user.controller;
 
 import com.dash.leap.domain.user.controller.docs.UserControllerDocs;
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
-import com.dash.leap.domain.user.dto.request.LoginRequest;
+import com.dash.leap.global.auth.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
-import com.dash.leap.domain.user.dto.response.LoginResponse;
+import com.dash.leap.global.auth.dto.response.LoginResponse;
 import com.dash.leap.domain.user.dto.response.MyPageResponse;
 import com.dash.leap.domain.user.dto.response.UserRegisterResponse;
 import com.dash.leap.domain.user.service.UserService;

@@ -19,6 +19,7 @@ public class JwtTokenProvider extends AbstractTokenProvider {
                 .claim("id", user.getId())
                 .claim("loginId", user.getLoginId())
                 .claim("nickname", user.getNickname())
+                .claim("role", user.getUserType().name())
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
