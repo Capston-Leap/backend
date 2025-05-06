@@ -18,7 +18,7 @@ public class CommentController implements CommentControllerDocs {
     private final CommentService commentService;
 
     // 커뮤니티 댓글 생성
-    @PostMapping("/{communityId}/post/{postId}/comment")
+    @PostMapping("/{communityId}/{postId}/comment")
     public ResponseEntity<CommentCreateResponse> createComment(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
@@ -29,7 +29,7 @@ public class CommentController implements CommentControllerDocs {
     }
 
     // 커뮤니티 댓글 삭제
-    @DeleteMapping("/{communityId}/post/{postId}/{commentId}")
+    @DeleteMapping("/{communityId}/{postId}/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
