@@ -22,7 +22,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Leap API")
                         .description("Leap API 문서입니다.")
-                        .version("v0.5"))
+                        .version("v1.0"))
                 .servers(Arrays.asList(
                         new Server().url("http://localhost:8080").description("Local Server URL"),
                         new Server().url("http://ceprj.gachon.ac.kr:60013").description("Gachon Server URL")
@@ -41,13 +41,4 @@ public class SwaggerConfig {
                         .name("Authorization")
                         .description("Enter your JWT token"));
     }
-
-//    private Components attachBearerAuthScheme() {
-//        return new Components().addSecuritySchemes("Auth",
-//                new SecurityScheme()
-//                        .name("Authorization")
-//                        .type(Type.APIKEY)
-//                        .in(In.HEADER)
-//                        .description("Enter your token in the Authorization header"));
-//    }
 }
