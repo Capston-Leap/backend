@@ -23,7 +23,7 @@ public class PostController implements PostControllerDocs {
     private final PostService postService;
 
     // 커뮤니티 게시글 전체 목록 조회
-    @GetMapping("/{communityId}/post")
+    @GetMapping("/{communityId}")
     public ResponseEntity<Page<PostListAllResponse>> getPostAll(
             @PathVariable(name = "communityId") Long communityId,
             @RequestParam(name = "page", defaultValue = "1") int pageNum,
@@ -33,7 +33,7 @@ public class PostController implements PostControllerDocs {
     }
 
     // 커뮤니티 게시글 상세 조회
-    @GetMapping("/{communityId}/post/{postId}")
+    @GetMapping("/{communityId}/{postId}")
     public ResponseEntity<PostDetailResponse> getPostDetail(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
@@ -57,7 +57,7 @@ public class PostController implements PostControllerDocs {
     }
 
     // 커뮤니티 게시글 생성
-    @PostMapping("/{communityId}/post")
+    @PostMapping("/{communityId}")
     public ResponseEntity<PostCreateResponse> createPost(
             @PathVariable(name = "communityId") Long communityId,
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -67,7 +67,7 @@ public class PostController implements PostControllerDocs {
     }
 
     // 커뮤니티 게시글 수정
-    @PatchMapping("/{communityId}/post/{postId}")
+    @PatchMapping("/{communityId}/{postId}")
     public ResponseEntity<PostUpdateResponse> updatePost(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
@@ -80,7 +80,7 @@ public class PostController implements PostControllerDocs {
     }
 
     // 커뮤니티 게시글 삭제
-    @DeleteMapping("/{communityId}/post/{postId}")
+    @DeleteMapping("/{communityId}/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
