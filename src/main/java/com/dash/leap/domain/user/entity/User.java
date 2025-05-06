@@ -62,7 +62,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserType userType = UserType.USER;
 
+    private boolean isDeleted = false;
+
     public void chooseChatbot(ChatbotType chatbotType) {
         this.chatbotType = chatbotType;
+    }
+
+    public void changeUserStatus(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

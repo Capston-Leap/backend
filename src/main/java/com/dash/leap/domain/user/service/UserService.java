@@ -75,8 +75,13 @@ public class UserService {
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
+
         User user = userRepository.findByLoginId(request.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않은 아이디입니다."));
+
+        if (user.isDeleted()) {
+            throw new UnauthorizedException("탈퇴한 회원은 로그인할 수 없습니다.");
+        }
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
@@ -88,8 +93,7 @@ public class UserService {
 
     @Transactional
     public ChatbotSettingResponse leapySetting(User user, ChatbotSettingRequest request) {
-        User findUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));
+        User findUser = findUserByIdOrElseThrow(user);
 
         log.info("[UserService] 온보딩: 챗봇(리피) 설정을 시작합니다.");
         if (findUser.getChatbotType() != null) {
@@ -118,10 +122,16 @@ public class UserService {
     @Transactional
     public void withdraw(User user) {
         log.warn("회원탈퇴 요청: userId = {}", user.getId());
-        userRepository.delete(user);
+        User findUser = findUserByIdOrElseThrow(user);
+        findUser.changeUserStatus(true);
     }
 
     public boolean checkLoginIdDuplicate(String loginId) {
         return userRepository.existsByLoginId(loginId);
+    }
+
+    private User findUserByIdOrElseThrow(User user) {
+        return userRepository.findById(user.getId())
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));
     }
 }
