@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -46,7 +47,9 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserService, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .exceptionHandling(e -> e
-                        .authenticationEntryPoint(getAuthenticationEntryPoint()))
+                        .authenticationEntryPoint(getAuthenticationEntryPoint())
+                        .accessDeniedHandler(getAccessDeniedHandler())
+                )
                 .logout(LogoutConfigurer::permitAll);
 
         return http.build();
@@ -60,6 +63,19 @@ public class SecurityConfig {
             response.setCharacterEncoding("UTF-8");
 
             ExceptionResponse body = new ExceptionResponse(HttpStatus.UNAUTHORIZED.toString(), "로그인이 필요합니다.");
+            String json = objectMapper.writeValueAsString(body);
+            response.getWriter().write(json);
+        };
+    }
+
+    @Bean
+    public AccessDeniedHandler getAccessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            ExceptionResponse body = new ExceptionResponse(HttpStatus.FORBIDDEN.toString(), "접근 권한이 없습니다.");
             String json = objectMapper.writeValueAsString(body);
             response.getWriter().write(json);
         };
