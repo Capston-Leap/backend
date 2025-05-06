@@ -2,7 +2,10 @@ package com.dash.leap.admin.user.service;
 
 import com.dash.leap.admin.user.dto.response.AdminUserListResponse;
 import com.dash.leap.admin.user.dto.response.AdminUserResponse;
+import com.dash.leap.admin.user.exception.AlreadyDeletedException;
+import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.domain.user.repository.UserRepository;
+import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,5 +29,18 @@ public class AdminUserService {
                 .map(AdminUserResponse::from);
 
         return AdminUserListResponse.from(userPage);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("해당 사용자가 존재하지 않습니다."));
+
+        if (findUser.isDeleted()) {
+            throw new AlreadyDeletedException("이미 탈퇴 처리된 사용자입니다.");
+        }
+
+        findUser.changeUserStatus(true);
     }
 }

@@ -1,6 +1,7 @@
 package com.dash.leap.admin.user.controller.docs;
 
 import com.dash.leap.admin.user.dto.response.AdminUserListResponse;
+import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,5 +20,12 @@ public interface AdminUserControllerDocs {
 
             @Parameter(description = "페이지 당 항목 수", example = "10")
             @RequestParam(name = "size", defaultValue = "10") int pageSize
+    );
+
+    @Operation(summary = "관리자 회원 강제 삭제", description = "관리자가 회원을 탈퇴(soft delete) 처리합니다.")
+    @ApiResponse(description = "회원탈퇴 성공", responseCode = "204")
+    ResponseEntity<Void> deleteUser(
+            @Parameter(description = "삭제할 회원 ID", example = "1") Long userId,
+            CustomUserDetails userDetails
     );
 }
