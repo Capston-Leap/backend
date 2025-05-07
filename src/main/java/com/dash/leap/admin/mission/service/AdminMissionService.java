@@ -1,8 +1,13 @@
 package com.dash.leap.admin.mission.service;
 
+import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionResponse;
+import com.dash.leap.domain.mission.entity.Mission;
+import com.dash.leap.domain.mission.entity.MissionStep;
 import com.dash.leap.domain.mission.repository.MissionRepository;
+import com.dash.leap.domain.mission.repository.MissionStepRepository;
+import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -11,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -18,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminMissionService {
 
     private final MissionRepository missionRepository;
+    private final MissionStepRepository missionStepRepository;
 
     public AdminMissionListResponse getMissionList(int page, int size) {
 
@@ -28,4 +36,12 @@ public class AdminMissionService {
         return AdminMissionListResponse.from(missionPage);
     }
 
+    public AdminMissionDetailResponse getMissionDetail(Long missionId) {
+
+        Mission mission = missionRepository.findById(missionId)
+                .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
+
+        List<MissionStep> steps = missionStepRepository.findByMissionIdOrderByStepAsc(missionId);
+        return AdminMissionDetailResponse.from(mission, steps);
+    }
 }

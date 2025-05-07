@@ -1,11 +1,13 @@
 package com.dash.leap.admin.mission.controller.docs;
 
+import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Admin Mission", description = "관리자 미션 관리 API")
@@ -19,5 +21,12 @@ public interface AdminMissionControllerDocs {
 
             @Parameter(description = "페이지 당 항목 수", example = "10")
             @RequestParam(name = "size", defaultValue = "10") int pageSize
+    );
+
+    @Operation(summary = "관리자 미션 상세 조회", description = "관리자가 미션 상세 정보 조회를 요청합니다.")
+    @ApiResponse(description = "조회 성공", responseCode = "200")
+    ResponseEntity<AdminMissionDetailResponse> readMissionDetail(
+            @Parameter(description = "조회할 미션 ID", example = "1")
+            @PathVariable(name = "missionId") Long missionId
     );
 }
