@@ -1,17 +1,18 @@
 package com.dash.leap.admin.mission.controller;
 
 import com.dash.leap.admin.mission.controller.docs.AdminMissionControllerDocs;
+import com.dash.leap.admin.mission.dto.request.AdminMissionCreateRequest;
 import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import com.dash.leap.admin.mission.service.AdminMissionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestController
@@ -35,5 +36,14 @@ public class AdminMissionController implements AdminMissionControllerDocs {
     ) {
         AdminMissionDetailResponse response = adminMissionService.getMissionDetail(missionId);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AdminMissionDetailResponse> createMission(
+            @Valid @RequestBody AdminMissionCreateRequest request
+    ) {
+        AdminMissionDetailResponse response = adminMissionService.createMission(request);
+        return ResponseEntity.status(CREATED).body(response);
     }
 }

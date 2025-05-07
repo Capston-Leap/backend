@@ -1,9 +1,11 @@
 package com.dash.leap.admin.mission.controller.docs;
 
+import com.dash.leap.admin.mission.dto.request.AdminMissionCreateRequest;
 import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +30,11 @@ public interface AdminMissionControllerDocs {
     ResponseEntity<AdminMissionDetailResponse> readMissionDetail(
             @Parameter(description = "조회할 미션 ID", example = "1")
             @PathVariable(name = "missionId") Long missionId
+    );
+
+    @Operation(summary = "관리자 미션 생성", description = "관리자가 새 미션 생성을 요청합니다.")
+    @ApiResponse(description = "생성 성공", responseCode = "201")
+    ResponseEntity<AdminMissionDetailResponse> createMission(
+            @RequestBody AdminMissionCreateRequest request
     );
 }

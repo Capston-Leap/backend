@@ -1,5 +1,6 @@
 package com.dash.leap.admin.mission.service;
 
+import com.dash.leap.admin.mission.dto.request.AdminMissionCreateRequest;
 import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionResponse;
@@ -43,5 +44,27 @@ public class AdminMissionService {
 
         List<MissionStep> steps = missionStepRepository.findByMissionIdOrderByStepAsc(missionId);
         return AdminMissionDetailResponse.from(mission, steps);
+    }
+
+    @Transactional
+    public AdminMissionDetailResponse createMission(AdminMissionCreateRequest request) {
+
+        Mission mission = Mission.builder()
+                .title(request.title())
+                .description(request.description())
+                .missionType(request.category())
+                .build();
+        Mission savedMission = missionRepository.save(mission);
+
+        List<MissionStep> steps = request.steps().stream()
+                .map(step -> MissionStep.builder()
+                        .mission(savedMission)
+                        .step(step.stepNum())
+                        .description(step.description())
+                        .build())
+                .toList();
+        List<MissionStep> savedSteps = missionStepRepository.saveAll(steps);
+
+        return AdminMissionDetailResponse.from(savedMission, savedSteps);
     }
 }

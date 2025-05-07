@@ -2,16 +2,16 @@ package com.dash.leap.domain.mission.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import static jakarta.persistence.FetchType.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@Builder
 public class MissionStep {
 
     @Id
@@ -26,4 +26,11 @@ public class MissionStep {
     private Integer step;
 
     private String description;
+
+    public MissionStep(Long id, Mission mission, Integer step, String description) {
+        this.id = id;
+        this.mission = mission;
+        this.step = step;
+        this.description = description;
+    }
 }
