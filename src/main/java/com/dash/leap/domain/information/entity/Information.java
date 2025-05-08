@@ -33,4 +33,11 @@ public class Information extends BaseEntity {
 
     @Column(length = 2083)
     private String url;
+
+    public void update(InfoType infoType, String title, String content, String url) {
+        this.infoType = infoType;
+        this.title = title;
+        this.content = content;
+        this.url = url;
+    }
 }
