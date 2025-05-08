@@ -46,4 +46,11 @@ public interface AdminMissionControllerDocs {
 
             @RequestBody AdminMissionCreateUpdateRequest request
     );
+
+    @Operation(summary = "관리자 미션 삭제", description = "관리자가 미션을 삭제(soft delete)합니다.")
+    @ApiResponse(description = "삭제 성공", responseCode = "204")
+    ResponseEntity<Void> deleteMission(
+            @Parameter(description = "삭제할 미션 ID", example = "1")
+            @PathVariable(name = "missionId") Long missionId
+    );
 }

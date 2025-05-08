@@ -56,4 +56,13 @@ public class AdminMissionController implements AdminMissionControllerDocs {
         AdminMissionDetailResponse response = adminMissionService.updateMission(missionId, request);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{missionId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteMission(
+            @PathVariable(name = "missionId") Long missionId
+    ) {
+        adminMissionService.deleteMission(missionId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
 }

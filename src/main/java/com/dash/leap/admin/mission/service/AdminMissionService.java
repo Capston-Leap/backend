@@ -71,6 +71,12 @@ public class AdminMissionService {
         return buildMissionStepAndSaveAll(request, mission);
     }
 
+    @Transactional
+    public void deleteMission(Long missionId) {
+        Mission mission = getMissionOrElseThrow(missionId);
+        mission.deleteMission();
+    }
+
     private Mission getMissionOrElseThrow(Long missionId) {
         return missionRepository.findById(missionId)
                 .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
