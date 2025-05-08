@@ -1,8 +1,6 @@
 package com.dash.leap.admin.community.controller.docs;
 
-import com.dash.leap.admin.community.dto.response.CategoryListResponse;
-import com.dash.leap.admin.community.dto.response.PostDetailResponse;
-import com.dash.leap.admin.community.dto.response.PostListAllResponse;
+import com.dash.leap.admin.community.dto.response.*;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Tag(name = "[Admin] community", description = "Admin Community API")
+@Tag(name = "[Admin] Community", description = "Admin Community API")
 public interface AdminCommunityControllerDocs {
 
     // [관리자] 커뮤니티 카테고리 목록 조회
@@ -44,7 +42,7 @@ public interface AdminCommunityControllerDocs {
     // [관리자] 커뮤니티 게시글 삭제
     @Operation(summary = "게시글 삭제", description = "커뮤니티의 특정 게시글을 삭제합니다.")
     @ApiResponse(responseCode = "204", description = "게시글 삭제 성공")
-    ResponseEntity<Void> deletePost(
+    ResponseEntity<PostDeleteResponse> deletePost(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             CustomUserDetails userDetails
@@ -53,7 +51,7 @@ public interface AdminCommunityControllerDocs {
     // [관리자] 커뮤니티 댓글 삭제
     @Operation(summary = "댓글 삭제", description = "커뮤니티 게시글의 댓글을 삭제합니다.")
     @ApiResponse(responseCode = "204", description = "댓글 삭제 성공")
-    ResponseEntity<Void> deleteComment(
+    ResponseEntity<CommentDeleteResponse> deleteComment(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             @PathVariable(name = "commentId") Long commentId,
