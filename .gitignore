@@ -40,3 +40,16 @@ out/
 
 ### macOS ###
 .DS_store
+
+### Python ###
+__pycache__/
+*.pyc
+
+### 모델 파일 ###
+#ai/emotion/kobert_emotion_model_2.pt
+#ai/summary/kobart_summary/kobart_summary_model_2.ckpt
+#ai/summary/kobart_summary/pytorch_model.bin
+ai/
+
+### log ###
+*.log
