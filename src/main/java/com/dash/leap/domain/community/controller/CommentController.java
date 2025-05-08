@@ -3,6 +3,7 @@ package com.dash.leap.domain.community.controller;
 import com.dash.leap.domain.community.controller.docs.CommentControllerDocs;
 import com.dash.leap.domain.community.dto.request.CommentCreateRequest;
 import com.dash.leap.domain.community.dto.response.CommentCreateResponse;
+import com.dash.leap.domain.community.dto.response.CommentDeleteResponse;
 import com.dash.leap.domain.community.service.CommentService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class CommentController implements CommentControllerDocs {
 
     // 커뮤니티 댓글 삭제
     @DeleteMapping("/{communityId}/{postId}/{commentId}")
-    public ResponseEntity<Void> deleteComment(
+    public ResponseEntity<CommentDeleteResponse> deleteComment(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             @PathVariable(name = "commentId") Long commentId,

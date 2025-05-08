@@ -2,6 +2,7 @@ package com.dash.leap.domain.community.service;
 
 import com.dash.leap.domain.community.dto.request.CommentCreateRequest;
 import com.dash.leap.domain.community.dto.response.CommentCreateResponse;
+import com.dash.leap.domain.community.dto.response.CommentDeleteResponse;
 import com.dash.leap.domain.community.entity.Post;
 import com.dash.leap.domain.community.entity.Comment;
 import com.dash.leap.domain.community.exception.BadRequestException;
@@ -57,7 +58,7 @@ public class CommentService {
 
     // 커뮤니티 댓글 삭제
     @Transactional
-    public void delete(Long communityId, Long postId, Long commentId, CustomUserDetails userDetails) {
+    public CommentDeleteResponse delete(Long communityId, Long postId, Long commentId, CustomUserDetails userDetails) {
         User user = userDetails.user();
 
         Comment comment = commentRepository.findById(commentId)
@@ -78,5 +79,7 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+
+        return new CommentDeleteResponse(comment.getId(), "댓글이 성공적으로 삭제되었습니다.");
     }
 }

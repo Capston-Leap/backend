@@ -1,11 +1,8 @@
 package com.dash.leap.domain.community.service;
 
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
-import com.dash.leap.domain.community.dto.response.PostCreateResponse;
+import com.dash.leap.domain.community.dto.response.*;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
-import com.dash.leap.domain.community.dto.response.PostDetailResponse;
-import com.dash.leap.domain.community.dto.response.PostListAllResponse;
-import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.domain.community.entity.Comment;
 import com.dash.leap.domain.community.entity.Community;
 import com.dash.leap.domain.community.entity.Post;
@@ -163,7 +160,7 @@ public class PostService {
 
     // 커뮤니티 게시글 삭제
     @Transactional
-    public void delete(Long communityId, Long postId, CustomUserDetails userDetails) {
+    public PostDeleteResponse delete(Long communityId, Long postId, CustomUserDetails userDetails) {
         User user = userDetails.user();
 
         Post post = postRepository.findById(postId)
@@ -178,5 +175,7 @@ public class PostService {
         }
 
         postRepository.delete(post);
+
+        return new PostDeleteResponse(post.getId(), "게시글이 성공적으로 삭제되었습니다.");
     }
 }

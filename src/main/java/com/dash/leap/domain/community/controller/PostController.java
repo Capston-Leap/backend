@@ -1,12 +1,9 @@
 package com.dash.leap.domain.community.controller;
 
 import com.dash.leap.domain.community.controller.docs.PostControllerDocs;
-import com.dash.leap.domain.community.dto.response.PostDetailResponse;
-import com.dash.leap.domain.community.dto.response.PostListAllResponse;
+import com.dash.leap.domain.community.dto.response.*;
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
-import com.dash.leap.domain.community.dto.response.PostCreateResponse;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
-import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
 import com.dash.leap.domain.community.service.PostService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -81,7 +78,7 @@ public class PostController implements PostControllerDocs {
 
     // 커뮤니티 게시글 삭제
     @DeleteMapping("/{communityId}/{postId}")
-    public ResponseEntity<Void> deletePost(
+    public ResponseEntity<PostDeleteResponse> deletePost(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             @AuthenticationPrincipal CustomUserDetails userDetails
