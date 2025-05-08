@@ -30,12 +30,18 @@ public class Mission extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MissionType missionType;
 
+    private boolean isDeleted = false;
+
     /**
-     * (관리자용) 미션 수정 메서드
+     * 관리자용 미션 연관관계 메서드
      */
     public void updateMission(String title, String description, MissionType missionType) {
         this.title = title;
         this.description = description;
         this.missionType = missionType;
+    }
+
+    public void deleteMission() {
+        this.isDeleted = true;
     }
 }
