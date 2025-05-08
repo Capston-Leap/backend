@@ -14,6 +14,12 @@ public record DiaryCreateResponse(
         @Schema(description = "기억에 남는 일이 있었나요?", example = "산책 도중 우연히 마주친 강아지가 나를 반겨줬던 따뜻한 순간이 가장 기억에 남는다. 짧았지만 기분이 몹시 좋아졌다.")
         String memory,
 
+        @Schema(description = "분석된 감정", example = "기쁨")
+        String emotion,
+
+        @Schema(description = "일기 요약")
+        String summary,
+
         @Schema(description = "메세지", example = "감정일기가 성공적으로 등록되었습니다.")
         String message
 ) {}
