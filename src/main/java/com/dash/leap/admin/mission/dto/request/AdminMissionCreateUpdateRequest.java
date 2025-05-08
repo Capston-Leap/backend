@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-@Schema(description = "관리자용 미션 생성 요청입니다.")
-public record AdminMissionCreateRequest(
+@Schema(description = "관리자용 미션 생성/수정 요청입니다.")
+public record AdminMissionCreateUpdateRequest(
 
         @Schema(description = "미션명", example = "스스로 감정 기록하기")
         @NotBlank
@@ -24,6 +24,6 @@ public record AdminMissionCreateRequest(
 
         @Schema(description = "미션 수행 단계")
         @NotNull
-        List<AdminMissionStepCreateRequest> steps
+        List<AdminMissionStepCreateUpdateRequest> steps
 ) {
 }

@@ -1,7 +1,7 @@
 package com.dash.leap.admin.mission.controller;
 
 import com.dash.leap.admin.mission.controller.docs.AdminMissionControllerDocs;
-import com.dash.leap.admin.mission.dto.request.AdminMissionCreateRequest;
+import com.dash.leap.admin.mission.dto.request.AdminMissionCreateUpdateRequest;
 import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import com.dash.leap.admin.mission.service.AdminMissionService;
@@ -41,7 +41,7 @@ public class AdminMissionController implements AdminMissionControllerDocs {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AdminMissionDetailResponse> createMission(
-            @Valid @RequestBody AdminMissionCreateRequest request
+            @Valid @RequestBody AdminMissionCreateUpdateRequest request
     ) {
         AdminMissionDetailResponse response = adminMissionService.createMission(request);
         return ResponseEntity.status(CREATED).body(response);

@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-@Schema(description = "관리자용 미션 단계 생성 요청입니다.")
-public record AdminMissionStepCreateRequest(
+@Schema(description = "관리자용 미션 단계 생성/수정 요청입니다.")
+public record AdminMissionStepCreateUpdateRequest(
 
         @Schema(description = "단계", example = "1")
         @Positive

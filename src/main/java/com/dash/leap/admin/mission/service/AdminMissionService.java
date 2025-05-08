@@ -1,6 +1,6 @@
 package com.dash.leap.admin.mission.service;
 
-import com.dash.leap.admin.mission.dto.request.AdminMissionCreateRequest;
+import com.dash.leap.admin.mission.dto.request.AdminMissionCreateUpdateRequest;
 import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionResponse;
@@ -47,7 +47,7 @@ public class AdminMissionService {
     }
 
     @Transactional
-    public AdminMissionDetailResponse createMission(AdminMissionCreateRequest request) {
+    public AdminMissionDetailResponse createMission(AdminMissionCreateUpdateRequest request) {
 
         Mission mission = Mission.builder()
                 .title(request.title())

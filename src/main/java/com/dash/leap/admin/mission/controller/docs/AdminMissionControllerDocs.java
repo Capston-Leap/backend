@@ -1,6 +1,6 @@
 package com.dash.leap.admin.mission.controller.docs;
 
-import com.dash.leap.admin.mission.dto.request.AdminMissionCreateRequest;
+import com.dash.leap.admin.mission.dto.request.AdminMissionCreateUpdateRequest;
 import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +35,6 @@ public interface AdminMissionControllerDocs {
     @Operation(summary = "관리자 미션 생성", description = "관리자가 새 미션 생성을 요청합니다.")
     @ApiResponse(description = "생성 성공", responseCode = "201")
     ResponseEntity<AdminMissionDetailResponse> createMission(
-            @RequestBody AdminMissionCreateRequest request
+            @RequestBody AdminMissionCreateUpdateRequest request
     );
 }
