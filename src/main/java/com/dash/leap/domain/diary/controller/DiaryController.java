@@ -33,7 +33,7 @@ public class DiaryController implements DiaryControllerDocs {
     // 감정일기 상세 조회
     @GetMapping("/{diaryId}")
     public ResponseEntity<DiaryDetailResponse> getDiaryDetail(
-            @PathVariable Long diaryId
+            @PathVariable(name = "diaryId") Long diaryId
     ) {
         return ResponseEntity.ok(diaryService.getDiaryDetail(diaryId));
     }
