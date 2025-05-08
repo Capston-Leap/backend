@@ -39,8 +39,7 @@ public class AdminMissionService {
 
     public AdminMissionDetailResponse getMissionDetail(Long missionId) {
 
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
+        Mission mission = getMissionOrElseThrow(missionId);
 
         List<MissionStep> steps = missionStepRepository.findByMissionIdOrderByStepAsc(missionId);
         return AdminMissionDetailResponse.from(mission, steps);
@@ -56,15 +55,37 @@ public class AdminMissionService {
                 .build();
         Mission savedMission = missionRepository.save(mission);
 
+        return buildMissionStepAndSaveAll(request, savedMission);
+    }
+
+    @Transactional
+    public AdminMissionDetailResponse updateMission(Long missionId, AdminMissionCreateUpdateRequest request) {
+
+        Mission mission = getMissionOrElseThrow(missionId);
+
+        // 기존 단계들 삭제 후 다시 등록하는 방식
+        missionStepRepository.deleteByMission(mission);
+
+        mission.updateMission(request.title(), request.description(), request.category());
+
+        return buildMissionStepAndSaveAll(request, mission);
+    }
+
+    private Mission getMissionOrElseThrow(Long missionId) {
+        return missionRepository.findById(missionId)
+                .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
+    }
+
+    private AdminMissionDetailResponse buildMissionStepAndSaveAll(AdminMissionCreateUpdateRequest request, Mission mission) {
         List<MissionStep> steps = request.steps().stream()
                 .map(step -> MissionStep.builder()
-                        .mission(savedMission)
+                        .mission(mission)
                         .step(step.stepNum())
                         .description(step.description())
                         .build())
                 .toList();
         List<MissionStep> savedSteps = missionStepRepository.saveAll(steps);
 
-        return AdminMissionDetailResponse.from(savedMission, savedSteps);
+        return AdminMissionDetailResponse.from(mission, savedSteps);
     }
 }

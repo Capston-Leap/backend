@@ -37,4 +37,13 @@ public interface AdminMissionControllerDocs {
     ResponseEntity<AdminMissionDetailResponse> createMission(
             @RequestBody AdminMissionCreateUpdateRequest request
     );
+
+    @Operation(summary = "관리자 미션 수정", description = "관리자가 미션 수정을 요청합니다.")
+    @ApiResponse(description = "수정 성공", responseCode = "200")
+    ResponseEntity<AdminMissionDetailResponse> updateMission(
+            @Parameter(description = "수정할 미션 ID", example = "1")
+            @PathVariable(name = "missionId") Long missionId,
+
+            @RequestBody AdminMissionCreateUpdateRequest request
+    );
 }

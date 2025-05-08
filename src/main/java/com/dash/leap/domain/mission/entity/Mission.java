@@ -29,4 +29,13 @@ public class Mission extends BaseEntity {
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private MissionType missionType;
+
+    /**
+     * (관리자용) 미션 수정 메서드
+     */
+    public void updateMission(String title, String description, MissionType missionType) {
+        this.title = title;
+        this.description = description;
+        this.missionType = missionType;
+    }
 }

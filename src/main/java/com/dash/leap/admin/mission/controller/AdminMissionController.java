@@ -46,4 +46,14 @@ public class AdminMissionController implements AdminMissionControllerDocs {
         AdminMissionDetailResponse response = adminMissionService.createMission(request);
         return ResponseEntity.status(CREATED).body(response);
     }
+
+    @PatchMapping("/{missionId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AdminMissionDetailResponse> updateMission(
+            @PathVariable(name = "missionId") Long missionId,
+            @Valid @RequestBody AdminMissionCreateUpdateRequest request
+    ) {
+        AdminMissionDetailResponse response = adminMissionService.updateMission(missionId, request);
+        return ResponseEntity.ok(response);
+    }
 }
