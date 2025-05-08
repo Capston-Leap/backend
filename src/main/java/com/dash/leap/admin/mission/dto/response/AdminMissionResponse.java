@@ -22,13 +22,17 @@ public record AdminMissionResponse(
         LocalDateTime createdTime,
 
         @Schema(description = "미션 수정일자", example = "2025-06-02")
-        LocalDateTime updateTime
+        LocalDateTime updateTime,
+
+        @Schema(description = "삭제 여부(삭제하지 않은 미션은 빈칸)", example = "삭제")
+        String isDeleted
 ) {
 
         public static AdminMissionResponse from(Mission mission) {
                 return new AdminMissionResponse(
                         mission.getId(), mission.getTitle(), mission.getMissionType(),
-                        mission.getCreatedAt(), mission.getUpdatedAt()
+                        mission.getCreatedAt(), mission.getUpdatedAt(),
+                        mission.isDeleted() ? "삭제" : ""
                 );
         }
 }
