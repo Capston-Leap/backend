@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -126,9 +127,14 @@ public class DiaryService {
                 .orElseThrow(() -> new NotFoundException("분석된 감정(" + predictedEmotion + ")에 해당하는 Emotion을 찾을 수 없습니다."));
 
         // 감정 점수 추출
-        String emotionScores = Arrays.stream(analyzedEmotion.split("\n"))
+        Map<String, String> scores = Arrays.stream(analyzedEmotion.split("\n"))
                 .dropWhile(line -> !line.startsWith("불안:"))
-                .collect(Collectors.joining("\n"));
+                .map(line -> line.split(":"))
+                .filter(parts -> parts.length == 2)
+                .collect(Collectors.toMap(
+                        parts -> parts[0].trim(),
+                        parts -> parts[1].trim()
+                ));
 
         log.info("[DiaryService] 일기 요약을 시작합니다.");
         // 텍스트 요약
@@ -151,7 +157,7 @@ public class DiaryService {
                 savedDiary.getDaily(),
                 savedDiary.getMemory(),
                 savedDiaryAnalysis.getEmotion().getCategory(),
-                emotionScores,
+                scores,
                 savedDiaryAnalysis.getSummary(),
                 "감정일기가 성공적으로 등록되었습니다."
         );

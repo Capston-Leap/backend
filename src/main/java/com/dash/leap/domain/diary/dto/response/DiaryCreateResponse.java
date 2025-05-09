@@ -2,6 +2,8 @@ package com.dash.leap.domain.diary.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Map;
+
 @Schema(description = "감정일기 생성 응답입니다.")
 public record DiaryCreateResponse(
 
@@ -17,14 +19,16 @@ public record DiaryCreateResponse(
         @Schema(description = "분석된 감정", example = "기쁨")
         String emotion,
 
-        @Schema(description = "분석된 감정 점수", example = "불안: 15.3%\n" +
-                                                        "분노: 12.9%\n" +
-                                                        "상처: 32.9%\n" +
-                                                        "슬픔: 74.4%\n" +
-                                                        "당황: 30.6%\n" +
-                                                        "기쁨: 99.9%\n" +
-                                                        "놀람: 15.7%")
-        String emotionScores,
+        @Schema(description = "분석된 감정 점수", example = "{\n" +
+                                                        "  \"불안\": \"15.3%\",\n" +
+                                                        "  \"분노\": \"12.9%\",\n" +
+                                                        "  \"상처\": \"32.9%\",\n" +
+                                                        "  \"슬픔\": \"74.4%\",\n" +
+                                                        "  \"당황\": \"30.6%\",\n" +
+                                                        "  \"기쁨\": \"99.9%\",\n" +
+                                                        "  \"놀람\": \"15.7%\"\n" +
+                                                        "}")
+        Map<String, String> emotionScores,
 
         @Schema(description = "일기 요약")
         String summary,
