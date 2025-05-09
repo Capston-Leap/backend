@@ -1,9 +1,7 @@
 package com.dash.leap.admin.community.controller;
 
 import com.dash.leap.admin.community.controller.docs.AdminCommunityControllerDocs;
-import com.dash.leap.admin.community.dto.response.CategoryListResponse;
-import com.dash.leap.admin.community.dto.response.PostDetailResponse;
-import com.dash.leap.admin.community.dto.response.PostListAllResponse;
+import com.dash.leap.admin.community.dto.response.*;
 import com.dash.leap.admin.community.service.AdminCommunityService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +48,7 @@ public class AdminCommunityController implements AdminCommunityControllerDocs {
 
     // [관리자] 커뮤니티 게시글 삭제
     @DeleteMapping("/{communityId}/{postId}")
-    public ResponseEntity<Void> deletePost(
+    public ResponseEntity<PostDeleteResponse> deletePost(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -61,7 +59,7 @@ public class AdminCommunityController implements AdminCommunityControllerDocs {
 
     // [관리자] 커뮤니티 댓글 삭제
     @DeleteMapping("/{communityId}/{postId}/{commentId}")
-    public ResponseEntity<Void> deleteComment(
+    public ResponseEntity<CommentDeleteResponse> deleteComment(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             @PathVariable(name = "commentId") Long commentId,

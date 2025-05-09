@@ -2,6 +2,7 @@ package com.dash.leap.domain.community.controller.docs;
 
 import com.dash.leap.domain.community.dto.request.CommentCreateRequest;
 import com.dash.leap.domain.community.dto.response.CommentCreateResponse;
+import com.dash.leap.domain.community.dto.response.CommentDeleteResponse;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +27,7 @@ public interface CommentControllerDocs {
     // 커뮤니티 댓글 삭제
     @Operation(summary = "댓글 삭제", description = "커뮤니티 게시글의 댓글을 삭제합니다.")
     @ApiResponse(responseCode = "204", description = "댓글 삭제 성공")
-    ResponseEntity<Void> deleteComment(
+    ResponseEntity<CommentDeleteResponse> deleteComment(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             @PathVariable(name = "commentId") Long commentId,

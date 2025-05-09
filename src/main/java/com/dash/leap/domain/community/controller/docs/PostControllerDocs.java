@@ -2,10 +2,7 @@ package com.dash.leap.domain.community.controller.docs;
 
 import com.dash.leap.domain.community.dto.request.PostCreateRequest;
 import com.dash.leap.domain.community.dto.request.PostUpdateRequest;
-import com.dash.leap.domain.community.dto.response.PostCreateResponse;
-import com.dash.leap.domain.community.dto.response.PostListAllResponse;
-import com.dash.leap.domain.community.dto.response.PostDetailResponse;
-import com.dash.leap.domain.community.dto.response.PostUpdateResponse;
+import com.dash.leap.domain.community.dto.response.*;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -74,7 +71,7 @@ public interface PostControllerDocs {
     // 커뮤니티 게시글 삭제
     @Operation(summary = "게시글 삭제", description = "커뮤니티의 특정 게시글을 삭제합니다.")
     @ApiResponse(responseCode = "204", description = "게시글 삭제 성공")
-    ResponseEntity<Void> deletePost(
+    ResponseEntity <PostDeleteResponse> deletePost(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
             CustomUserDetails userDetails
