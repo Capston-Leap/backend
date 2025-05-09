@@ -114,6 +114,8 @@ public class DiaryService {
         // 감정 분석
         String analyzedEmotion = emotionAnalysisService.analyzeEmotion(text);
 
+        log.info("[DiaryService] {}", analyzedEmotion);
+
         String predictedEmotion = Arrays.stream(analyzedEmotion.split("\n"))
                 .filter(line -> line.startsWith("예측된 감정:"))
                 .map(line -> line.replace("예측된 감정:", "").trim())
@@ -122,6 +124,11 @@ public class DiaryService {
 
         Emotion emotion = emotionRepository.findByCategory(predictedEmotion)
                 .orElseThrow(() -> new NotFoundException("분석된 감정(" + predictedEmotion + ")에 해당하는 Emotion을 찾을 수 없습니다."));
+
+        // 감정 점수 추출
+        String emotionScores = Arrays.stream(analyzedEmotion.split("\n"))
+                .dropWhile(line -> !line.startsWith("불안:"))
+                .collect(Collectors.joining("\n"));
 
         log.info("[DiaryService] 일기 요약을 시작합니다.");
         // 텍스트 요약
@@ -144,6 +151,7 @@ public class DiaryService {
                 savedDiary.getDaily(),
                 savedDiary.getMemory(),
                 savedDiaryAnalysis.getEmotion().getCategory(),
+                emotionScores,
                 savedDiaryAnalysis.getSummary(),
                 "감정일기가 성공적으로 등록되었습니다."
         );
