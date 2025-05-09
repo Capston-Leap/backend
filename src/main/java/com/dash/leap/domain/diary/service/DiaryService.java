@@ -55,6 +55,7 @@ public class DiaryService {
                             diary.getId(),
                             diary.getCreatedAt().toLocalDate(),
                             emotion.getId(),
+                            emotion.getCategory(),
                             emotion.getEmoji()
                     );
                 })
