@@ -131,9 +131,11 @@ public class DiaryService {
         // 감정 점수 추출
         Map<String, Double> scores = extractEmotionScores(analyzedEmotion);
 
-        log.info("[DiaryService] 일기 요약을 시작합니다.");
         // 텍스트 요약
+        log.info("[DiaryService] 일기 요약을 시작합니다.");
         String summarizedText = summaryService.summarizeText(text);
+        log.info("[DiaryService] {}", summarizedText);
+
         if (summarizedText.startsWith("AI 일기 요약 실패")) {
             throw new TextSummaryFailedException("AI 일기 요약에 실패했습니다.");
         }
