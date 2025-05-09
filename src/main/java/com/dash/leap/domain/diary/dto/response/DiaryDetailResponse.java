@@ -2,6 +2,8 @@ package com.dash.leap.domain.diary.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Map;
+
 public record DiaryDetailResponse(
 
         @Schema(description = "감정일기 ID", example = "3")
@@ -21,6 +23,17 @@ public record DiaryDetailResponse(
 
         @Schema(description = "감정 분석 결과", example = "기쁨")
         String category,
+
+        @Schema(description = "AI 감정 분석 점수", example = """
+                                                        {
+                                                          "불안": 15.3,
+                                                          "분노": 12.9,
+                                                          "기쁨": 99.1,
+                                                          "슬픔": 23.7,
+                                                          ...
+                                                        }
+                                                        """)
+        Map<String, Double> emotionScores,
 
         @Schema(description = "감정 이모지", example = "/static/emojis/joy.png")
         String emoji
