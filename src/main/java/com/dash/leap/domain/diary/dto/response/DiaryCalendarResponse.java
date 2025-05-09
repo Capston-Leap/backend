@@ -14,6 +14,9 @@ public record DiaryCalendarResponse(
         @Schema(description = "감정 이모지 ID", example = "5")
         Long emotionId,
 
+        @Schema(description = "감정 분석 결과", example = "기쁨")
+        String category,
+
         @Schema(description = "감정 이모지", example = "/static/emojis/joy.png")
         String emoji
 ) {}

@@ -12,18 +12,26 @@ import com.dash.leap.domain.diary.repository.DiaryRepository;
 import com.dash.leap.domain.diary.repository.DiaryAnalysisRepository;
 import com.dash.leap.domain.diary.repository.EmotionRepository;
 import com.dash.leap.domain.user.entity.User;
+import com.dash.leap.global.aimodel.exception.EmotionScoreConvertException;
+import com.dash.leap.global.aimodel.exception.TextSummaryFailedException;
+import com.dash.leap.global.aimodel.service.EmotionAnalysisService;
+import com.dash.leap.global.aimodel.service.SummaryService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import com.dash.leap.global.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -32,6 +40,8 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final DiaryAnalysisRepository diaryAnalysisRepository;
     private final EmotionRepository emotionRepository;
+    private final EmotionAnalysisService emotionAnalysisService;
+    private final SummaryService summaryService;
 
     // 감정일기 월별 캘린더 조회
     public List<DiaryCalendarResponse> getMonthlyCalendar(int year, int month) {
@@ -47,6 +57,7 @@ public class DiaryService {
                             diary.getId(),
                             diary.getCreatedAt().toLocalDate(),
                             emotion.getId(),
+                            emotion.getCategory(),
                             emotion.getEmoji()
                     );
                 })
@@ -71,6 +82,7 @@ public class DiaryService {
                 diaryAnalysis.getSummary(),
                 emotion.getId(),
                 emotion.getCategory(),
+                diaryAnalysis.getEmotionScore(),
                 emotion.getEmoji()
         );
     }
@@ -96,11 +108,98 @@ public class DiaryService {
 
         Diary savedDiary = diaryRepository.save(diary);
 
+        /**
+         * AI 분석
+         */
+        String text = request.daily() + " " + request.memory();
+
+        log.info("[DiaryService] 감정 분석을 시작합니다.");
+        // 감정 분석
+        String analyzedEmotion = emotionAnalysisService.analyzeEmotion(text);
+
+        log.info("[DiaryService] {}", analyzedEmotion);
+
+        String predictedEmotion = Arrays.stream(analyzedEmotion.split("\n"))
+                .filter(line -> line.startsWith("예측된 감정:"))
+                .map(line -> line.replace("예측된 감정:", "").trim())
+                .findFirst()
+                .orElse("AI 감정 분석 실패");
+
+        Emotion emotion = emotionRepository.findByCategory(predictedEmotion)
+                .orElseThrow(() -> new NotFoundException("분석된 감정(" + predictedEmotion + ")에 해당하는 Emotion을 찾을 수 없습니다."));
+
+        // 감정 점수 추출
+        Map<String, Double> scores = extractEmotionScores(analyzedEmotion);
+
+        // 텍스트 요약
+        log.info("[DiaryService] 일기 요약을 시작합니다.");
+        String summarizedText = summaryService.summarizeText(text);
+        log.info("[DiaryService] {}", summarizedText);
+
+        if (summarizedText.startsWith("AI 일기 요약 실패")) {
+            throw new TextSummaryFailedException("AI 일기 요약에 실패했습니다.");
+        }
+        String summary = extractSummary(summarizedText);
+
+        log.info("[DiaryService] 성공적으로 감정 분석 및 일기 요약이 완료되었습니다.");
+        DiaryAnalysis diaryAnalysis = DiaryAnalysis.builder()
+                .diary(savedDiary)
+                .emotion(emotion)
+                .emotionScore(scores)
+                .summary(summary)
+                .build();
+        DiaryAnalysis savedDiaryAnalysis = diaryAnalysisRepository.save(diaryAnalysis);
+
         return new DiaryCreateResponse(
                 savedDiary.getId(),
                 savedDiary.getDaily(),
                 savedDiary.getMemory(),
+                savedDiaryAnalysis.getEmotion().getCategory(),
+                scores,
+                savedDiaryAnalysis.getSummary(),
                 "감정일기가 성공적으로 등록되었습니다."
         );
+    }
+
+    private Map<String, Double> extractEmotionScores(String analyzedEmotion) {
+        return Arrays.stream(analyzedEmotion.split("\n"))
+                .dropWhile(line -> !line.startsWith("불안:"))
+                .map(line -> line.split(":"))
+                .filter(parts -> parts.length == 2)
+                .collect(Collectors.toMap(
+                        parts -> parts[0].trim(),
+                        parts -> {
+                            String raw = parts[1].trim().replace("%", "");
+                            try {
+                                return Double.parseDouble(raw);
+                            } catch (NumberFormatException e) {
+                                throw new EmotionScoreConvertException("감정 점수를 숫자로 파싱하는 데 실패했습니다: " + raw);
+                            }
+                        }
+                ));
+    }
+
+    private String extractSummary(String rawOutput) {
+
+        if (rawOutput == null || !rawOutput.contains("📌 요약:")) {
+            return "요약을 추출할 수 없습니다.";
+        }
+
+        String[] lines = rawOutput.split("\n");
+        boolean foundSummary = false;
+        StringBuilder summaryBuilder = new StringBuilder();
+
+        for (String line : lines) {
+            if (foundSummary) {
+                if (line.trim().startsWith("=")) break; // 종료 지점
+                summaryBuilder.append(line.trim()).append(" ");
+            }
+
+            if (line.trim().startsWith("📌 요약:")) {
+                foundSummary = true;
+            }
+        }
+
+        return summaryBuilder.toString().trim();
     }
 }

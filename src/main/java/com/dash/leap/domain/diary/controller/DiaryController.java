@@ -8,11 +8,14 @@ import com.dash.leap.domain.diary.dto.response.DiaryDetailResponse;
 import com.dash.leap.domain.diary.service.DiaryService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/diary")
@@ -33,7 +36,7 @@ public class DiaryController implements DiaryControllerDocs {
     // 감정일기 상세 조회
     @GetMapping("/{diaryId}")
     public ResponseEntity<DiaryDetailResponse> getDiaryDetail(
-            @PathVariable Long diaryId
+            @PathVariable(name = "diaryId") Long diaryId
     ) {
         return ResponseEntity.ok(diaryService.getDiaryDetail(diaryId));
     }
@@ -44,6 +47,6 @@ public class DiaryController implements DiaryControllerDocs {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody DiaryCreateRequest request
     ) {
-        return ResponseEntity.ok(diaryService.createDiary(userDetails, request));
+        return ResponseEntity.status(CREATED).body(diaryService.createDiary(userDetails, request));
     }
 }

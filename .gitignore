@@ -40,3 +40,21 @@ out/
 
 ### macOS ###
 .DS_store
+
+### Python ###
+__pycache__/
+*.pyc
+
+### AI 모델 관련 ###
+*.pt
+*.ckpt
+*.bin
+
+# Python 가상환경
+.venv/
+
+# 파이썬 bytecode, 캐시
+*.py[cod]
+
+### log ###
+*.log
