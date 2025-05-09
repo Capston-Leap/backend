@@ -19,4 +19,12 @@ public class AIModelRunExceptionHandler {
         log.info("TextSummaryFailedExceptionResponse: {}", exceptionResponse);
         return ResponseEntity.internalServerError().body(exceptionResponse);
     }
+
+    @ExceptionHandler(EmotionScoreConvertException.class)
+    @ApiResponse(responseCode = "500")
+    public ResponseEntity<ExceptionResponse> handleEmotionScoreConvertException(EmotionScoreConvertException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage());
+        log.info("EmotionScoreConvertExceptionResponse: {}", exceptionResponse);
+        return ResponseEntity.internalServerError().body(exceptionResponse);
+    }
 }

@@ -12,6 +12,7 @@ import com.dash.leap.domain.diary.repository.DiaryRepository;
 import com.dash.leap.domain.diary.repository.DiaryAnalysisRepository;
 import com.dash.leap.domain.diary.repository.EmotionRepository;
 import com.dash.leap.domain.user.entity.User;
+import com.dash.leap.global.aimodel.exception.EmotionScoreConvertException;
 import com.dash.leap.global.aimodel.exception.TextSummaryFailedException;
 import com.dash.leap.global.aimodel.service.EmotionAnalysisService;
 import com.dash.leap.global.aimodel.service.SummaryService;
@@ -127,14 +128,7 @@ public class DiaryService {
                 .orElseThrow(() -> new NotFoundException("분석된 감정(" + predictedEmotion + ")에 해당하는 Emotion을 찾을 수 없습니다."));
 
         // 감정 점수 추출
-        Map<String, String> scores = Arrays.stream(analyzedEmotion.split("\n"))
-                .dropWhile(line -> !line.startsWith("불안:"))
-                .map(line -> line.split(":"))
-                .filter(parts -> parts.length == 2)
-                .collect(Collectors.toMap(
-                        parts -> parts[0].trim(),
-                        parts -> parts[1].trim()
-                ));
+        Map<String, Double> scores = extractEmotionScores(analyzedEmotion);
 
         log.info("[DiaryService] 일기 요약을 시작합니다.");
         // 텍스트 요약
@@ -148,6 +142,7 @@ public class DiaryService {
         DiaryAnalysis diaryAnalysis = DiaryAnalysis.builder()
                 .diary(savedDiary)
                 .emotion(emotion)
+                .emotionScore(scores)
                 .summary(summary)
                 .build();
         DiaryAnalysis savedDiaryAnalysis = diaryAnalysisRepository.save(diaryAnalysis);
@@ -161,6 +156,24 @@ public class DiaryService {
                 savedDiaryAnalysis.getSummary(),
                 "감정일기가 성공적으로 등록되었습니다."
         );
+    }
+
+    private Map<String, Double> extractEmotionScores(String analyzedEmotion) {
+        return Arrays.stream(analyzedEmotion.split("\n"))
+                .dropWhile(line -> !line.startsWith("불안:"))
+                .map(line -> line.split(":"))
+                .filter(parts -> parts.length == 2)
+                .collect(Collectors.toMap(
+                        parts -> parts[0].trim(),
+                        parts -> {
+                            String raw = parts[1].trim().replace("%", "");
+                            try {
+                                return Double.parseDouble(raw);
+                            } catch (NumberFormatException e) {
+                                throw new EmotionScoreConvertException("감정 점수를 숫자로 파싱하는 데 실패했습니다: " + raw);
+                            }
+                        }
+                ));
     }
 
     private String extractSummary(String rawOutput) {
