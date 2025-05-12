@@ -23,14 +23,16 @@ public interface DiaryControllerDocs {
     @ApiResponse(responseCode = "200", description = "감정일기 월별 목록 조회 성공")
     ResponseEntity<List<DiaryCalendarResponse>> getMonthlyCalendar(
             @RequestParam(name = "year") int year,
-            @RequestParam(name = "month") int month
+            @RequestParam(name = "month") int month,
+            CustomUserDetails userDetails
     );
 
     // 감정일기 상세 조회
     @Operation(summary = "감정 일기 상세 조회", description = "diaryId를 기반으로 감정 일기 상세 정보를 조회합니다.")
     @ApiResponse(responseCode = "200", description = "감정일기 상세 조회 성공")
     ResponseEntity<DiaryDetailResponse> getDiaryDetail(
-            @PathVariable(name = "diaryId") Long diaryId
+            @PathVariable(name = "diaryId") Long diaryId,
+            CustomUserDetails userDetails
     );
 
     // 감정일기 생성
