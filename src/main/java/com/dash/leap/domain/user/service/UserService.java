@@ -101,6 +101,7 @@ public class UserService {
         }
 
         findUser.chooseChatbot(request.toChatbotType());
+        log.info("[UserService] 설정이 완료되었습니다.");
         return ChatbotSettingResponse.from(findUser);
     }
 
@@ -115,15 +116,16 @@ public class UserService {
 
     @Transactional
     public void logout(User user) {
-        log.info("로그아웃 요청: userId = {}", user.getId());
+        log.info("[UserService] 로그아웃 요청: userId = {}", user.getId());
         // Redis 이용 시 Blacklist 추가하는 방향으로 수정
     }
 
     @Transactional
     public void withdraw(User user) {
-        log.warn("회원탈퇴 요청: userId = {}", user.getId());
+        log.warn("[UserService] 회원탈퇴 요청: userId = {}", user.getId());
         User findUser = findUserByIdOrElseThrow(user);
-        findUser.changeUserStatus(true);
+        findUser.deleteUser();
+        log.info("[UserService] 정상적으로 탈퇴되었습니다.");
     }
 
     public boolean checkLoginIdDuplicate(String loginId) {

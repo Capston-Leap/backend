@@ -41,6 +41,6 @@ public class AdminUserService {
             throw new AlreadyDeletedException("이미 탈퇴 처리된 사용자입니다.");
         }
 
-        findUser.changeUserStatus(true);
+        findUser.deleteUser();
     }
 }

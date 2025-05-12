@@ -46,19 +46,19 @@ public class MissionService {
     public MissionAreaSettingResponse chooseMissionArea(User user, MissionAreaSettingRequest request) {
 
         User findUser = findUserByIdInUserRepository(user);
-        log.info("[UserService] 자립영역 설정 시작: 사용자 ID = {}", findUser.getId());
+        log.info("[MissionService] 자립영역 설정 시작: 사용자 ID = {}", findUser.getId());
 
         if (findUser.getMissionType() == null) {
-            log.info("[UserService] 온보딩 진행: 초기 자립영역을 설정합니다.");
+            log.info("[MissionService] 온보딩 진행: 초기 자립영역을 설정합니다.");
             findUser.setMissionType(request.missionType());
         } else {
-            log.info("[UserService] 새로운 자립영역을 설정합니다.");
+            log.info("[MissionService] 새로운 자립영역을 설정합니다.");
 
             if (missionRecordRepository.countByUserAndStatus(findUser, MissionStatus.ONGOING) != 0) {
                 throw new InvalidMissionAreaChangeException("현재 선택한 영역의 미션을 모두 완료해야 다른 영역을 선택할 수 있습니다.");
             }
 
-            log.info("[UserService] 완료했던 영역을 확인합니다.");
+            log.info("[MissionService] 완료했던 영역을 확인합니다.");
             List<MissionRecord> completedMissions = missionRecordRepository.findAllByUserAndStatus(findUser, MissionStatus.COMPLETED);
             Set<MissionType> completedAreas = completedMissions.stream()
                     .map(m -> m.getMission().getMissionType())
@@ -68,9 +68,9 @@ public class MissionService {
                 throw new InvalidMissionAreaChangeException("이미 완료한 영역은 다시 선택할 수 없습니다.");
             }
 
-            log.info("[UserService] 자립영역을 변경을 승인합니다: before = {}", findUser.getMissionType());
+            log.info("[MissionService] 자립영역을 변경을 승인합니다: before = {}", findUser.getMissionType());
             findUser.setMissionType(request.missionType());
-            log.info("[UserService] 자립영역 변경에 성공했습니다: after = {}", findUser.getMissionType());
+            log.info("[MissionService] 자립영역 변경에 성공했습니다: after = {}", findUser.getMissionType());
 
         }
 
@@ -145,15 +145,28 @@ public class MissionService {
     @Transactional
     public MissionRecordResponse writeMissionRecord(User user, Long recordId, MissionRecordRequest request) {
 
+        User findUser = findUserByIdInUserRepository(user);
         MissionRecord userMission = getUserMissionOrElseThrow(recordId);
 
-        verifyMissionOwner(user, userMission);
+        verifyMissionOwner(findUser, userMission);
 
         if (userMission.getStatus() == MissionStatus.COMPLETED) {
             throw new InvalidRecordRequestException("이미 완료된 미션은 수행일지를 작성할 수 없습니다.");
         }
 
         userMission.writeRecord(request.content(), request.emotion());
+
+        /**
+         * 해당 영역의 모든 미션 완료 시 사용자 레벨업
+         */
+        MissionType missionType = userMission.getMission().getMissionType();
+        long totalCount = missionRecordRepository.countAllByUserAndMissionType(findUser.getId(), missionType);
+        long completedCount = missionRecordRepository.countCompletedByUserAndMissionType(findUser.getId(), missionType);
+
+        if (totalCount != 0 && totalCount == completedCount) {
+            findUser.levelUp();
+            log.info("[MissionService] 사용자 {}의 레벨이 상승했습니다. 현재 레벨: {}", findUser.getNickname(), findUser.getLevel());
+        }
 
         return MissionRecordResponse.from(userMission);
     }

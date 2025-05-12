@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface InformationRepository extends JpaRepository<Information, Long> {
 
@@ -16,4 +18,6 @@ public interface InformationRepository extends JpaRepository<Information, Long> 
             "where (:type is null or i.infoType = :type) " +
             "order by i.createdAt desc")
     Slice<Information> findByInfoType(@Param("type")InfoType infoType, Pageable pageable);
+
+    Optional<Information> findTopByOrderByCreatedAtDesc(); // 가장 최신 정보
 }
