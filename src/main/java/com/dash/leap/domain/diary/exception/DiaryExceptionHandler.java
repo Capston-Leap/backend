@@ -14,4 +14,10 @@ public class DiaryExceptionHandler {
         ExceptionResponse response = new ExceptionResponse("409", e.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handleForbiddenException(ForbiddenException e) {
+        ExceptionResponse response = new ExceptionResponse("403", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 }

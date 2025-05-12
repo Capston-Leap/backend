@@ -12,8 +12,8 @@ import java.util.List;
 
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
-    @Query("SELECT d FROM Diary d WHERE YEAR(d.createdAt) = :year AND MONTH(d.createdAt) = :month")
-    List<Diary> findByYearAndMonth(@Param("year") int year, @Param("month") int month);
+    @Query("SELECT d FROM Diary d WHERE YEAR(d.createdAt) = :year AND MONTH(d.createdAt) = :month AND d.user.id = :userId")
+    List<Diary> findByYearAndMonthAndUserId(@Param("year") int year, @Param("month") int month, @Param("userId") Long userId);
 
     boolean existsByUserAndCreatedAtBetween(User user, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

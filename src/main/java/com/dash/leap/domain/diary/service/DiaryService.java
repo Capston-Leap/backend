@@ -8,6 +8,7 @@ import com.dash.leap.domain.diary.entity.Diary;
 import com.dash.leap.domain.diary.entity.DiaryAnalysis;
 import com.dash.leap.domain.diary.entity.Emotion;
 import com.dash.leap.domain.diary.exception.ConflictException;
+import com.dash.leap.domain.diary.exception.ForbiddenException;
 import com.dash.leap.domain.diary.repository.DiaryRepository;
 import com.dash.leap.domain.diary.repository.DiaryAnalysisRepository;
 import com.dash.leap.domain.diary.repository.EmotionRepository;
@@ -44,8 +45,10 @@ public class DiaryService {
     private final SummaryService summaryService;
 
     // 감정일기 월별 캘린더 조회
-    public List<DiaryCalendarResponse> getMonthlyCalendar(int year, int month) {
-        List<Diary> diaries = diaryRepository.findByYearAndMonth(year, month);
+    public List<DiaryCalendarResponse> getMonthlyCalendar(int year, int month, CustomUserDetails userDetails) {
+        Long userId = userDetails.user().getId();
+
+        List<Diary> diaries = diaryRepository.findByYearAndMonthAndUserId(year, month, userId);
 
         return diaries.stream()
                 .map(diary -> {
@@ -65,9 +68,15 @@ public class DiaryService {
     }
 
     // 감정일기 상세 조회
-    public DiaryDetailResponse getDiaryDetail(Long diaryId) {
+    public DiaryDetailResponse getDiaryDetail(Long diaryId, CustomUserDetails userDetails) {
+        Long userId = userDetails.user().getId();
+
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 감정일기입니다."));
+
+        if (!diary.getUser().getId().equals(userId)) {
+            throw new ForbiddenException("본인이 작성한 감정일기만 조회할 수 있습니다.");
+        }
 
         DiaryAnalysis diaryAnalysis = diaryAnalysisRepository.findByDiaryId(diaryId)
                 .orElseThrow(() -> new NotFoundException("해당 분석 결과가 없습니다."));

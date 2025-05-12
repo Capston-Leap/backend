@@ -8,7 +8,6 @@ import com.dash.leap.domain.diary.dto.response.DiaryDetailResponse;
 import com.dash.leap.domain.diary.service.DiaryService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +27,19 @@ public class DiaryController implements DiaryControllerDocs {
     @GetMapping
     public ResponseEntity<List<DiaryCalendarResponse>> getMonthlyCalendar(
             @RequestParam int year,
-            @RequestParam int month
+            @RequestParam int month,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return ResponseEntity.ok(diaryService.getMonthlyCalendar(year, month));
+        return ResponseEntity.ok(diaryService.getMonthlyCalendar(year, month, userDetails));
     }
 
     // 감정일기 상세 조회
     @GetMapping("/{diaryId}")
     public ResponseEntity<DiaryDetailResponse> getDiaryDetail(
-            @PathVariable(name = "diaryId") Long diaryId
+            @PathVariable(name = "diaryId") Long diaryId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return ResponseEntity.ok(diaryService.getDiaryDetail(diaryId));
+        return ResponseEntity.ok(diaryService.getDiaryDetail(diaryId, userDetails));
     }
 
     // 감정일기 생성
