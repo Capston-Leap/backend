@@ -68,7 +68,7 @@ public class User {
         this.chatbotType = chatbotType;
     }
 
-    public void changeUserStatus(boolean isDeleted) {
-        this.isDeleted = isDeleted;
+    public void deleteUser() {
+        this.isDeleted = true;
     }
 }
