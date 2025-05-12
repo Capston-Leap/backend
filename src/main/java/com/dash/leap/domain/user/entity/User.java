@@ -71,4 +71,8 @@ public class User {
     public void deleteUser() {
         this.isDeleted = true;
     }
+
+    public void levelUp() {
+        this.level++;
+    }
 }
