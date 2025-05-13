@@ -9,7 +9,10 @@ import com.dash.leap.domain.chat.entity.Message;
 import com.dash.leap.domain.chat.repository.ChatRepository;
 import com.dash.leap.domain.chat.repository.MessageRepository;
 import com.dash.leap.domain.chat.service.prompt.SystemPromptFactory;
+import com.dash.leap.domain.diary.entity.DiaryAnalysis;
+import com.dash.leap.domain.diary.repository.DiaryAnalysisRepository;
 import com.dash.leap.domain.user.entity.User;
+import com.dash.leap.domain.user.repository.UserRepository;
 import com.dash.leap.global.auth.jwt.exception.UnauthorizedException;
 import com.dash.leap.global.exception.NotFoundException;
 import com.dash.leap.global.openai.client.OpenAIClient;
@@ -22,6 +25,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,24 +40,33 @@ public class ChatMessageService {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final OpenAIClient openAIClient;
+    private final UserRepository userRepository;
+    private final DiaryAnalysisRepository diaryAnalysisRepository;
 
     @Transactional
     public LeapyResponse sendMessage(User user, LeapyRequest request) {
 
-        Chat chat = getChatOrElseThrow(user.getId());
+        User findUser = findUserByIdOrElseThrow(user);
+        Chat chat = getChatOrElseThrow(findUser.getId());
 
         Message userMessage = Message.builder()
                 .chat(chat)
-                .sender(user.getName())
+                .sender(findUser.getName())
                 .content(request.content())
                 .build();
-
         messageRepository.save(userMessage);
 
-        // 지피티 응답
-        String systemPrompt = SystemPromptFactory.getSystemPrompt(user.getChatbotType());
+        // 최근 감정 분석 조회
+        LocalDateTime startOfYesterday = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime endOfToday = LocalDate.now().atTime(LocalTime.MAX);
+        List<DiaryAnalysis> recentAnal = diaryAnalysisRepository
+                .findByDiary_UserAndAnalysisTimeBetween(user, startOfYesterday, endOfToday);
 
-        log.info("과거 대화 내용을 가져옵니다: chat.getId() = {}", chat.getId());
+        // 지피티 응답
+        String systemPrompt = SystemPromptFactory.getSystemPrompt(findUser.getChatbotType(), recentAnal);
+        log.info("[ChatMessageService] systemPrompt = {}", systemPrompt);
+
+        log.info("[ChatMessageService] 과거 대화 내용을 가져옵니다: chat.getId() = {}", chat.getId());
         List<Message> pastMessages = messageRepository.findByMessagesByChatId(chat.getId());
 
         int MAX = 15; // 최대 대화 기억 개수
@@ -71,17 +86,17 @@ public class ChatMessageService {
                 .content(systemPrompt)
                 .build());
 
-        log.info("GPT 응답을 받습니다");
+        log.info("[ChatMessageService] GPT 응답을 받습니다");
         String reply = openAIClient.getGPTResponse(messageDtoList);
-        log.info("응답 받았습니다: reply = {}", reply);
+        log.info("[ChatMessageService] 응답 받았습니다: reply = {}", reply);
 
         Message gptMessage = Message.builder()
                 .chat(chat)
-                .sender("리피" + user.getChatbotType())
+                .sender("리피" + findUser.getChatbotType())
                 .content(reply)
                 .build();
-
         Message message = messageRepository.save(gptMessage);
+
         return LeapyResponse.from(message);
     }
 
@@ -102,6 +117,11 @@ public class ChatMessageService {
                 .toList();
 
         return new ChatResponse(chat.getId(), responseList, slice.hasNext());
+    }
+
+    private User findUserByIdOrElseThrow(User user) {
+        return userRepository.findById(user.getId())
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));
     }
 
     private Chat getChatOrElseThrow(Long userId) {
