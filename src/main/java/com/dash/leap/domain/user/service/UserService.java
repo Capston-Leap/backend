@@ -111,7 +111,7 @@ public class UserService {
         long completedMissionCount = missionRecordRepository.countByUserAndStatus(user, MissionStatus.COMPLETED);
         long postCount = postRepository.countByUser(user);
 
-        return new MyPageResponse(user.getName(), user.getLoginId(), ongoingMissionCount, completedMissionCount, postCount);
+        return new MyPageResponse(user.getName(), user.getLoginId(), user.getChatbotType(), ongoingMissionCount, completedMissionCount, postCount);
     }
 
     @Transactional

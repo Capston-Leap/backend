@@ -1,5 +1,6 @@
 package com.dash.leap.domain.user.dto.response;
 
+import com.dash.leap.domain.user.entity.enums.ChatbotType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "마이페이지 조회 응답입니다.")
@@ -10,6 +11,9 @@ public record MyPageResponse(
 
         @Schema(description = "회원 로그인 아이디", example = "leapy@gachon.ac.kr")
         String loginId,
+
+        @Schema(description = "리피 유형", example = "MF")
+        ChatbotType chatbotType,
 
         @Schema(description = "진행 중인 미션", example = "4")
         long ongoingMissionCount,
