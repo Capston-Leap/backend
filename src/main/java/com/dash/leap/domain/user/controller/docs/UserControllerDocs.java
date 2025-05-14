@@ -1,6 +1,7 @@
 package com.dash.leap.domain.user.controller.docs;
 
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
+import com.dash.leap.domain.user.dto.response.UserResponse;
 import com.dash.leap.global.auth.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
@@ -39,9 +40,11 @@ public interface UserControllerDocs {
 
     @Operation(summary = "마이페이지 조회", description = "마이페이지 조회를 요청합니다.")
     @ApiResponse(description = "조회 성공", responseCode = "200")
-    ResponseEntity<MyPageResponse> readMyPage(
-            CustomUserDetails userDetails
-    );
+    ResponseEntity<MyPageResponse> readMyPage(CustomUserDetails userDetails);
+
+    @Operation(summary = "회원정보 조회", description = "회원정보 조회를 요청합니다.")
+    @ApiResponse(description = "조회 성공", responseCode = "200")
+    ResponseEntity<UserResponse> readUserInfo(CustomUserDetails userDetails);
 
     @Operation(summary = "로그아웃", description = "로그아웃을 요청합니다. Redis 사용 안 하므로 JWT는 클라이언트에서 삭제 부탁드립니다.")
     @ApiResponse(description = "로그아웃 성공", responseCode = "204")

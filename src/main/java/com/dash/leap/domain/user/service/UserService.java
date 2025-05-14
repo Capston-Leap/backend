@@ -6,6 +6,7 @@ import com.dash.leap.domain.community.repository.PostRepository;
 import com.dash.leap.domain.mission.entity.enums.MissionStatus;
 import com.dash.leap.domain.mission.repository.MissionRecordRepository;
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
+import com.dash.leap.domain.user.dto.response.UserResponse;
 import com.dash.leap.global.auth.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
@@ -111,7 +112,14 @@ public class UserService {
         long completedMissionCount = missionRecordRepository.countByUserAndStatus(user, MissionStatus.COMPLETED);
         long postCount = postRepository.countByUser(user);
 
-        return new MyPageResponse(user.getName(), user.getLoginId(), ongoingMissionCount, completedMissionCount, postCount);
+        return new MyPageResponse(user.getName(), user.getLoginId(), user.getChatbotType(), ongoingMissionCount, completedMissionCount, postCount);
+    }
+
+    public UserResponse getUserInfo(User user) {
+        log.info("[UserService] 회원 정보 요청: userId = {}", user.getId());
+
+        User findUser = findUserByIdOrElseThrow(user);
+        return UserResponse.from(findUser);
     }
 
     @Transactional
