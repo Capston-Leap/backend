@@ -2,6 +2,7 @@ package com.dash.leap.domain.user.controller;
 
 import com.dash.leap.domain.user.controller.docs.UserControllerDocs;
 import com.dash.leap.domain.user.dto.request.ChatbotSettingRequest;
+import com.dash.leap.domain.user.dto.response.UserResponse;
 import com.dash.leap.global.auth.dto.request.LoginRequest;
 import com.dash.leap.domain.user.dto.request.UserRegisterRequest;
 import com.dash.leap.domain.user.dto.response.ChatbotSettingResponse;
@@ -55,6 +56,12 @@ public class UserController implements UserControllerDocs {
     @GetMapping("/profile")
     public ResponseEntity<MyPageResponse> readMyPage(@AuthenticationPrincipal CustomUserDetails userDetails) {
         MyPageResponse response = userService.getMyPage(userDetails.user());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> readUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        UserResponse response = userService.getUserInfo(userDetails.user());
         return ResponseEntity.ok(response);
     }
 
