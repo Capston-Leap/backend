@@ -56,4 +56,12 @@ public class GlobalExceptionHandler {
         log.warn("HttpMessageNotReadableExceptionResponse: {}", e.getMessage());
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ApiResponse(responseCode = "400")
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
+        log.warn("IllegalArgumentExceptionResponse: {}", exceptionResponse);
+        return ResponseEntity.badRequest().body(exceptionResponse);
+    }
 }
