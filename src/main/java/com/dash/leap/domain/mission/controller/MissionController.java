@@ -8,16 +8,20 @@ import com.dash.leap.domain.mission.service.MissionService;
 import com.dash.leap.domain.mission.dto.request.MissionAreaSettingRequest;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/mission")
 @RequiredArgsConstructor
+@Validated
 public class MissionController implements MissionControllerDocs {
 
     private final MissionService missionService;
@@ -40,8 +44,8 @@ public class MissionController implements MissionControllerDocs {
     @GetMapping
     public ResponseEntity<UserMissionListResponse> readUserMissionList(
             @RequestParam(name = "status") MissionStatus status,
-            @RequestParam(name = "page", defaultValue = "0") int pageNum,
-            @RequestParam(name = "size", defaultValue = "5") int pageSize,
+            @RequestParam(name = "page", defaultValue = "0") @Min(value = 0) int pageNum,
+            @RequestParam(name = "size", defaultValue = "5") @Positive int pageSize,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         UserMissionListResponse response = missionService.getUserMissionList(userDetails.user(), status, pageNum, pageSize);

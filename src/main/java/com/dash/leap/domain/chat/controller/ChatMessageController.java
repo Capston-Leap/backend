@@ -7,16 +7,20 @@ import com.dash.leap.domain.chat.dto.response.LeapyResponse;
 import com.dash.leap.domain.chat.service.ChatMessageService;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/chat")
 @RequiredArgsConstructor
+@Validated
 public class ChatMessageController implements ChatMessageControllerDocs {
 
     private final ChatMessageService chatService;
@@ -32,8 +36,8 @@ public class ChatMessageController implements ChatMessageControllerDocs {
 
     @GetMapping
     public ResponseEntity<ChatResponse> readChatMessage(
-            @RequestParam(name = "page", defaultValue = "0") int pageNum,
-            @RequestParam(name = "size", defaultValue = "10") int pageSize,
+            @RequestParam(name = "page", defaultValue = "0") @Min(value = 0) int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") @Positive int pageSize,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         ChatResponse response = chatService.getMessageList(userDetails.user(), pageNum, pageSize);

@@ -6,10 +6,13 @@ import com.dash.leap.admin.mission.dto.response.AdminMissionDetailResponse;
 import com.dash.leap.admin.mission.dto.response.AdminMissionListResponse;
 import com.dash.leap.admin.mission.service.AdminMissionService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.*;
@@ -18,13 +21,17 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequestMapping("/admin/mission")
 @RequiredArgsConstructor
+@Validated
 public class AdminMissionController implements AdminMissionControllerDocs {
 
     private final AdminMissionService adminMissionService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AdminMissionListResponse> readAllMission(int pageNum, int pageSize) {
+    public ResponseEntity<AdminMissionListResponse> readAllMission(
+            @RequestParam(name = "page", defaultValue = "0") @Min(value = 0) int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") @Positive int pageSize
+    ) {
         AdminMissionListResponse response = adminMissionService.getMissionList(pageNum, pageSize);
         return ResponseEntity.ok(response);
     }
