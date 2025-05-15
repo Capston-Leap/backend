@@ -88,7 +88,8 @@ public class ChatMessageService {
                 .build());
 
         log.info("[ChatMessageService] GPT 응답을 받습니다");
-        String reply = openAIClient.getGPTResponse(messageDtoList);
+        String raw = openAIClient.getGPTResponse(messageDtoList);
+        String reply = removeEmojis(raw);
         log.info("[ChatMessageService] 응답 받았습니다: reply = {}", reply);
 
         Message gptMessage = Message.builder()
@@ -132,5 +133,15 @@ public class ChatMessageService {
     private Chat getChatOrElseThrow(Long userId) {
         return chatRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException("채팅방을 찾을 수 없습니다"));
+    }
+
+    private String removeEmojis(String input) {
+        if (input == null) return null;
+        return input.replaceAll("[\\x{1F600}-\\x{1F64F}" +  // 이모티콘 범위
+                        "\\x{1F300}-\\x{1F5FF}" +  // 기호 및 그림문자
+                        "\\x{1F680}-\\x{1F6FF}" +  // 교통 및 지도 기호
+                        "\\x{2600}-\\x{26FF}" +    // 기타 기호
+                        "\\x{2700}-\\x{27BF}]+",   // 딩뱃 문자
+                "");
     }
 }
