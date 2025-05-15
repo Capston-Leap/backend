@@ -24,6 +24,7 @@ public class HomeService {
     private final InformationRepository informationRepository;
 
     public HomeResponse getHome(User user) {
+        log.info("[HomeService] getHome() 실행: 홈 정보를 요청합니다: userId = {}", user.getId());
 
         User findUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));

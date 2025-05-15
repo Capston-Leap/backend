@@ -46,7 +46,7 @@ public class MissionService {
     public MissionAreaSettingResponse chooseMissionArea(User user, MissionAreaSettingRequest request) {
 
         User findUser = findUserByIdInUserRepository(user);
-        log.info("[MissionService] 자립영역 설정 시작: 사용자 ID = {}", findUser.getId());
+        log.info("[MissionService] chooseMissionArea() 실행: 자립영역 설정 시작: 사용자 ID = {}", findUser.getId());
 
         if (findUser.getMissionType() == null) {
             log.info("[MissionService] 온보딩 진행: 초기 자립영역을 설정합니다.");
@@ -90,6 +90,7 @@ public class MissionService {
     }
 
     public MissionAreaResponse getMissionDashboard(User user) {
+        log.info("[MissionService] getMissionDashboard() 실행: 자립영역 대시보드를 조회합니다: 사용자 ID = {}", user.getId());
 
         MissionType selected = user.getMissionType();
         long total = missionRecordRepository.countAllByUserAndMissionType(user.getId(), selected);
@@ -104,6 +105,7 @@ public class MissionService {
     }
 
     public UserMissionListResponse getUserMissionList(User user, MissionStatus status, int pageNum, int pageSize) {
+        log.info("[MissionService] getUserMissionList() 실행: 진행 중/완료된 미션을 조회합니다: 사용자 ID = {}, status = {}, pageNum = {}, pageSize = {}", user.getId(), status, pageNum, pageSize);
 
         if (status == MissionStatus.ONGOING) { // 진행 중인 미션 조회
             List<MissionRecord> missionList = missionRecordRepository.findAllByUserAndStatus(user, MissionStatus.ONGOING);
@@ -126,6 +128,7 @@ public class MissionService {
     }
 
     public MissionDetailResponse getMissionDetail(User user, Long missionId) {
+        log.info("[MissionService] getMissionDetail() 실행: 미션을 상세 조회합니다: 사용자 ID = {}, missionId = {}", user.getId(), missionId);
 
         Mission mission = missionRepository.findById(missionId)
                 .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));
@@ -144,6 +147,7 @@ public class MissionService {
 
     @Transactional
     public MissionRecordResponse writeMissionRecord(User user, Long recordId, MissionRecordRequest request) {
+        log.info("[MissionService] writeMissionRecord() 실행: 미션 일지를 작성합니다: 사용자 ID = {}, recordId = {}", user.getId(), recordId);
 
         User findUser = findUserByIdInUserRepository(user);
         MissionRecord userMission = getUserMissionOrElseThrow(recordId);
@@ -172,6 +176,7 @@ public class MissionService {
     }
 
     public MissionRecordResponse readMissionRecord(User user, Long recordId) {
+        log.info("[MissionService] readMissionRecord() 실행: 작성한 미션 일지를 조회합니다: 사용자 ID = {}, recordId = {}", user.getId(), recordId);
 
         MissionRecord userMission = getUserMissionOrElseThrow(recordId);
 
@@ -184,6 +189,9 @@ public class MissionService {
         return MissionRecordResponse.from(userMission);
     }
 
+    /**
+     * 메소드
+     */
     private User findUserByIdInUserRepository(User user) {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));

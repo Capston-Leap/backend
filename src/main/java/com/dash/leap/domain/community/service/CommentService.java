@@ -14,9 +14,11 @@ import com.dash.leap.domain.user.entity.User;
 import com.dash.leap.global.auth.user.CustomUserDetails;
 import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,6 +31,7 @@ public class CommentService {
     // 커뮤니티 댓글 생성
     @Transactional
     public CommentCreateResponse create(Long communityId, Long postId, CustomUserDetails userDetails, CommentCreateRequest request) {
+        log.info("[CommentService] create() 실행: 커뮤니티에 새로운 댓글을 생성합니다: communityId = {}, postId = {}", communityId, postId);
         User user = userDetails.user();
 
         communityRepository.findById(communityId)
@@ -59,6 +62,7 @@ public class CommentService {
     // 커뮤니티 댓글 삭제
     @Transactional
     public CommentDeleteResponse delete(Long communityId, Long postId, Long commentId, CustomUserDetails userDetails) {
+        log.info("[CommentService] delete() 실행: 댓글을 삭제합니다: communityId = {}, postId = {}, commentId = {}", communityId, postId, commentId);
         User user = userDetails.user();
 
         Comment comment = commentRepository.findById(commentId)

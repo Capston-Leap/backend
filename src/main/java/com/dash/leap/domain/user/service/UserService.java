@@ -43,6 +43,7 @@ public class UserService {
 
     @Transactional
     public UserRegisterResponse register(UserRegisterRequest request) {
+        log.info("[UserService] register() 실행: 회원가입 요청: request.loginId() = {}", request.loginId());
 
         if (checkLoginIdDuplicate(request.loginId())) {
             throw new DuplicateLoginIdException("아이디 중복 검사를 실시해주세요.");
@@ -76,6 +77,7 @@ public class UserService {
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
+        log.info("[UserService] login() 실행: 로그인 요청: request.loginId() = {}", request.loginId());
 
         User user = userRepository.findByLoginId(request.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않은 아이디입니다."));
@@ -136,6 +138,9 @@ public class UserService {
         log.info("[UserService] 정상적으로 탈퇴되었습니다.");
     }
 
+    /**
+     * 메소드
+     */
     public boolean checkLoginIdDuplicate(String loginId) {
         return userRepository.existsByLoginId(loginId);
     }

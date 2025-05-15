@@ -15,6 +15,7 @@ import com.dash.leap.global.auth.user.CustomUserDetails;
 import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.dash.leap.domain.community.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -34,6 +36,8 @@ public class PostService {
     // 커뮤니티 게시글 전체 목록 조회
     @Transactional(readOnly = true)
     public Page<PostListAllResponse> getPostAll(Long communityId, int page, int size) {
+        log.info("[PostService] getPostAll() 실행: 커뮤니티 게시글 전체 목록을 조회합니다: communityId = {}, page = {}, size = {}", communityId, page, size);
+
         communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
 
@@ -53,6 +57,8 @@ public class PostService {
     // 커뮤니티 게시글 상세 조회
     @Transactional(readOnly = true)
     public PostDetailResponse getPostDetail(Long communityId, Long postId, int page, int size) {
+        log.info("[PostService] getPostDetail() 실행: 커뮤니티 게시글을 상세 조회합니다: communityId = {}, postId = {}, page = {}, size = {}", communityId, postId, page, size);
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글입니다."));
 
@@ -88,8 +94,9 @@ public class PostService {
     // 마이페이지 - 본인이 작성한 커뮤니티 게시글 목록 조회
     @Transactional(readOnly = true)
     public Page<PostListAllResponse> getMyPostAll(Long communityId, CustomUserDetails userDetails, int page, int size) {
-
         Long userId = userDetails.user().getId();
+        log.info("[PostService] getMyPostAll() 실행: 본인이 작성한 커뮤니티 게시글 목록을 조회합니다(마이페이지): " +
+                "userId = {}, communityId = {}, page = {}, size = {}", userId, communityId, page, size);
 
         communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
@@ -111,6 +118,7 @@ public class PostService {
     @Transactional
     public PostCreateResponse create(Long communityId, CustomUserDetails userDetails, PostCreateRequest request) {
         User user = userDetails.user();
+        log.info("[PostService] create() 실행: 새로운 게시글을 생성합니다: userId = {}, communityId = {}",user.getId(), communityId);
 
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
@@ -136,6 +144,7 @@ public class PostService {
     @Transactional
     public PostUpdateResponse update(Long communityId, Long postId, CustomUserDetails userDetails, PostUpdateRequest request) {
         User user = userDetails.user();
+        log.info("[PostService] update() 실행: 게시글을 수정합니다: userId = {}, communityId = {}, postId = {}", user.getId(), communityId, postId);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
@@ -162,6 +171,7 @@ public class PostService {
     @Transactional
     public PostDeleteResponse delete(Long communityId, Long postId, CustomUserDetails userDetails) {
         User user = userDetails.user();
+        log.info("[PostService] delete() 실행: 게시글을 삭제합니다: userId = {}, communityId = {}, postId = {}", user.getId(), communityId, postId);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글입니다."));
