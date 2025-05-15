@@ -21,6 +21,7 @@ public class SummaryService {
     private String scriptPath;
 
     public String summarizeText(String text) {
+        log.info("[SummaryService] summarizeText() 실행: 일기 요약 시작");
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath, text);
@@ -33,15 +34,15 @@ public class SummaryService {
                 int exitCode = process.waitFor();
 
                 if (exitCode != 0) {
-                    log.error("[SummaryService] Text summarization failed: {}", output);
-                    log.error("[SummaryService] Text summarization exited with code {}", exitCode);
+                    log.error("[SummaryService] 일기 요약 실패: {}", output);
+                    log.error("[SummaryService] 일기 요약 실패 exited with code {}", exitCode);
                     return "AI 일기 요약 실패: " + output;
                 }
 
                 return output;
             }
         } catch (Exception e) {
-            log.error("[SummaryService] Text summarization error ", e);
+            log.error("[SummaryService] 일기 요약 오류 발생: ", e);
             return "AI 일기 요약 실패 (오류 발생): " + e.getMessage();
         }
     }

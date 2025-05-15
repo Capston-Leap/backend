@@ -21,6 +21,7 @@ public class EmotionAnalysisService {
     private String scriptPath;
 
     public String analyzeEmotion(String text) {
+        log.info("[EmotionAnalysisService] analyzeEmotion() 실행: 감정 분석 시작");
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath, text);
@@ -33,15 +34,15 @@ public class EmotionAnalysisService {
                 int exitCode = process.waitFor();
 
                 if (exitCode != 0) {
-                    log.error("[EmotionAnalysisService] Emotion analysis failed: {}", output);
-                    log.error("[EmotionAnalysisService] Emotion analysis exited with code {}", exitCode);
+                    log.error("[EmotionAnalysisService] 감정 분석 실패: {}", output);
+                    log.error("[EmotionAnalysisService] 감정 분석 실패 exited with code {}", exitCode);
                     return "AI 감정 분석 실패: " + output;
                 }
 
                 return output;
             }
         } catch (Exception e) {
-            log.error("[EmotionAnalysisService] Emotion analysis error ", e);
+            log.error("[EmotionAnalysisService] 감정 분석 오류 발생: ", e);
             return "AI 감정 분석 중 오류 발생: " + e.getMessage();
         }
     }
