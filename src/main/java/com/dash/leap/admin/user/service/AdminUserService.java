@@ -23,6 +23,7 @@ public class AdminUserService {
     private final UserRepository userRepository;
 
     public AdminUserListResponse getUserList(int page, int size) {
+        log.info("[AdminUserService] getUserList() 실행: 회원 목록을 조회합니다: page = {}, size = {}", page, size);
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "registerTime"));
         Page<AdminUserResponse> userPage = userRepository.findAll(pageRequest)
@@ -33,6 +34,7 @@ public class AdminUserService {
 
     @Transactional
     public void deleteUser(Long userId) {
+        log.info("[AdminUserService] deleteUser() 실행: 회원을 탈퇴시킵니다: 탈퇴시킬 userId = {}", userId);
 
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("해당 사용자가 존재하지 않습니다."));

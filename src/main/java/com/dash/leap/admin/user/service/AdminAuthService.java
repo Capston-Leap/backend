@@ -29,6 +29,7 @@ public class AdminAuthService {
 
     @Transactional
     public AdminRegisterResponse register(AdminRegisterRequest request) {
+        log.info("[AdminAuthService] register() 실행: 새로운 관리자 회원가입 요청: request.loginId() = {}", request.loginId());
 
         if (userRepository.existsByLoginId(request.loginId())) {
             throw new DuplicateLoginIdException("이미 사용 중인 로그인 ID입니다.");
@@ -51,6 +52,7 @@ public class AdminAuthService {
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
+        log.info("[AdminAuthService] login() 실행: 관리자 로그인 요청: request.loginId() = {}", request.loginId());
 
         User admin = userRepository.findByLoginId(request.loginId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않은 아이디입니다."));
@@ -73,7 +75,7 @@ public class AdminAuthService {
 
     @Transactional
     public void logout(User user) {
-        log.info("관리자 로그아웃 요청: userId = {}", user.getId());
+        log.info("[AdminAuthService] logout() 실행: 관리자 로그아웃 요청: userId = {}", user.getId());
         // Redis 이용 시 Blacklist 추가하는 방향으로 수정
     }
 }

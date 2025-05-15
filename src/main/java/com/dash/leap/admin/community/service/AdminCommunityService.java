@@ -13,6 +13,7 @@ import com.dash.leap.global.auth.user.CustomUserDetails;
 import com.dash.leap.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import com.dash.leap.admin.community.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -34,6 +36,7 @@ public class AdminCommunityService {
     // [관리자] 커뮤니티 카테고리 목록 조회
     @Transactional(readOnly = true)
     public List<CategoryListResponse> getCategory() {
+        log.info("[AdminCommunityService] getCategory() 실행: 커뮤니티 카테고리 목록을 조회합니다.");
         return communityRepository.findAll().stream()
                 .map(c -> new CategoryListResponse(c.getId(), c.getCommunityType()))
                 .toList();
@@ -42,6 +45,8 @@ public class AdminCommunityService {
     // [관리자] 커뮤니티 게시글 전체 목록 조회
     @Transactional(readOnly = true)
     public Page<PostListAllResponse> getPostAll(Long communityId, int page, int size) {
+        log.info("[AdminCommunityService] getPostAll() 실행: 커뮤니티 게시글 전체 목록을 조회합니다: communityId = {}, page = {}, size = {}", communityId, page, size);
+
         communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 커뮤니티입니다."));
 
@@ -62,6 +67,8 @@ public class AdminCommunityService {
     // [관리자] 커뮤니티 게시글 상세 조회
     @Transactional(readOnly = true)
     public PostDetailResponse getPostDetail(Long communityId, Long postId, int page, int size) {
+        log.info("[AdminCommunityService] getPostDetail() 실행: 커뮤니티 게시글을 상세 조회합니다: communityId = {}, postId = {}, page = {}, size = {}", communityId, postId, page, size);
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글입니다."));
 
@@ -97,6 +104,8 @@ public class AdminCommunityService {
     // [관리자] 커뮤니티 게시글 삭제
     @Transactional
     public PostDeleteResponse delete(Long communityId, Long postId, CustomUserDetails userDetails) {
+        log.info("[AdminCommunityService] delete() 실행: 커뮤니티 게시글을 삭제합니다: communityId = {}, postId = {}", communityId, postId);
+
         User user = userDetails.user();
 
         Post post = postRepository.findById(postId)
@@ -118,6 +127,8 @@ public class AdminCommunityService {
     // [관리자] 커뮤니티 댓글 삭제
     @Transactional
     public CommentDeleteResponse delete(Long communityId, Long postId, Long commentId, CustomUserDetails userDetails) {
+        log.info("[AdminCommunityService] delete() 실행: 커뮤니티 댓글을 삭제합니다: communityId = {}, postId = {}, commentId = {}", communityId, postId, commentId);
+
         User user = userDetails.user();
 
         Comment comment = commentRepository.findById(commentId)
