@@ -29,6 +29,7 @@ public class AdminMissionService {
     private final MissionStepRepository missionStepRepository;
 
     public AdminMissionListResponse getMissionList(int page, int size) {
+        log.info("[AdminMissionService] getMissionList() 실행: 미션 목록을 조회합니다: page = {}, size = {}", page, size);
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<AdminMissionResponse> missionPage = missionRepository.findAll(pageRequest)
@@ -38,6 +39,7 @@ public class AdminMissionService {
     }
 
     public AdminMissionDetailResponse getMissionDetail(Long missionId) {
+        log.info("[AdminMissionService] getMissionDetail() 실행: 미션을 상세 조회합니다: missionId = {}", missionId);
 
         Mission mission = getMissionOrElseThrow(missionId);
 
@@ -47,6 +49,7 @@ public class AdminMissionService {
 
     @Transactional
     public AdminMissionDetailResponse createMission(AdminMissionCreateUpdateRequest request) {
+        log.info("[AdminMissionService] createMission() 실행: 새로운 미션을 생성합니다.");
 
         Mission mission = Mission.builder()
                 .title(request.title())
@@ -60,6 +63,7 @@ public class AdminMissionService {
 
     @Transactional
     public AdminMissionDetailResponse updateMission(Long missionId, AdminMissionCreateUpdateRequest request) {
+        log.info("[AdminMissionService] updateMission() 실행: 미션을 수정합니다: missionId = {}", missionId);
 
         Mission mission = getMissionOrElseThrow(missionId);
 
@@ -73,10 +77,14 @@ public class AdminMissionService {
 
     @Transactional
     public void deleteMission(Long missionId) {
+        log.info("[AdminMissionService] deleteMission() 실행: 미션을 삭제합니다: missionId = {}", missionId);
         Mission mission = getMissionOrElseThrow(missionId);
         mission.deleteMission();
     }
 
+    /**
+     * 메소드
+     */
     private Mission getMissionOrElseThrow(Long missionId) {
         return missionRepository.findById(missionId)
                 .orElseThrow(() -> new NotFoundException("해당 미션을 찾을 수 없습니다."));

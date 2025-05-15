@@ -47,6 +47,7 @@ public class DiaryService {
     // 감정일기 월별 캘린더 조회
     public List<DiaryCalendarResponse> getMonthlyCalendar(int year, int month, CustomUserDetails userDetails) {
         Long userId = userDetails.user().getId();
+        log.info("[DiaryService] getMonthlyCalendar() 실행: 감정일기 월별 캘린더를 조회합니다: userId = {}, year = {}, month = {}", userId, year, month);
 
         List<Diary> diaries = diaryRepository.findByYearAndMonthAndUserId(year, month, userId);
 
@@ -70,6 +71,7 @@ public class DiaryService {
     // 감정일기 상세 조회
     public DiaryDetailResponse getDiaryDetail(Long diaryId, CustomUserDetails userDetails) {
         Long userId = userDetails.user().getId();
+        log.info("[DiaryService] getDiaryDetail() 실행: 감정일기를 상세 조회합니다: userId = {}, diaryId = {}", userId, diaryId);
 
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 감정일기입니다."));
@@ -99,6 +101,7 @@ public class DiaryService {
     // 감정일기 생성
     public DiaryCreateResponse createDiary(CustomUserDetails userDetails, DiaryCreateRequest request) {
         User user = userDetails.user();
+        log.info("[DiaryService] createDiary() 실행: 감정일기를 작성합니다: userId = {}", user.getId());
 
         LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
         LocalDateTime endOfToday = LocalDate.now().atTime(LocalTime.MAX);
@@ -170,6 +173,9 @@ public class DiaryService {
         );
     }
 
+    /**
+     * 메소드
+     */
     private Map<String, Double> extractEmotionScores(String analyzedEmotion) {
         return Arrays.stream(analyzedEmotion.split("\n"))
                 .dropWhile(line -> !line.startsWith("불안:"))

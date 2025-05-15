@@ -45,6 +45,7 @@ public class ChatMessageService {
 
     @Transactional
     public LeapyResponse sendMessage(User user, LeapyRequest request) {
+        log.info("[ChatMessageService] sendMessage() 실행: 메시지를 전송합니다: userId = {}", user.getId());
 
         User findUser = findUserByIdOrElseThrow(user);
         Chat chat = getChatOrElseThrow(findUser.getId());
@@ -102,6 +103,7 @@ public class ChatMessageService {
 
     @Transactional
     public ChatResponse getMessageList(User user, int pageNum, int pageSize) {
+        log.info("[ChatMessageService] getMessageList() 실행: 대화 내역을 조회합니다: userId = {}, pageNum = {}, pageSize = {}", user.getId(), pageNum, pageSize);
 
         Chat chat = getChatOrElseThrow(user.getId());
 
@@ -119,6 +121,9 @@ public class ChatMessageService {
         return new ChatResponse(chat.getId(), responseList, slice.hasNext());
     }
 
+    /**
+     * 메소드
+     */
     private User findUserByIdOrElseThrow(User user) {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: 사용자 ID = " + user.getId()));

@@ -24,6 +24,8 @@ public class InformationService {
     private final InformationRepository informationRepository;
 
     public InformationListResponse getInformationList(InfoType infoType, int pageNum, int pageSize) {
+        log.info("[InformationService] getInformationList() 실행: 자립지원정보 목록을 요청합니다: infoType = {}, pageNum = {}, pageSize = {}", infoType, pageNum, pageSize);
+
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Slice<Information> slice = informationRepository.findByInfoType(infoType, pageable);
 
