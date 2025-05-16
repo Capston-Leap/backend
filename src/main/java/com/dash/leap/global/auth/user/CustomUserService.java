@@ -15,7 +15,6 @@ public class CustomUserService {
     private final UserRepository userRepository;
 
     public CustomUserDetails loadUserById(Long userId) {
-        log.info("[CustomUserService] loadUserById() 실행: userId = {}", userId);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UnauthorizedException("유효하지 않은 사용자입니다."));
