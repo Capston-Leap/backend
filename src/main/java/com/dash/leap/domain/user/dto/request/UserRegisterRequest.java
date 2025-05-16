@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Schema(description = "회원가입을 위한 요청입니다.")
 public record UserRegisterRequest(
-        // TODO: 회원가입 시 요구사항에 맞게 변경 필요
 
         @Schema(description = "로그인 ID", example = "leapy@gachon.ac.kr")
         @NotBlank(message = "아이디는 필수 입력 값입니다.")
@@ -16,8 +15,6 @@ public record UserRegisterRequest(
 
         @Schema(description = "비밀번호", example = "password1234!")
         @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
-//        @Pattern()
-//                @Size
         String password,
 
         @Schema(description = "비밀번호 확인", example = "password1234!")
@@ -34,5 +31,6 @@ public record UserRegisterRequest(
 
         @Schema(description = "생년월일", example = "2000-02-05")
         @NotNull(message = "생년월일은 필수 입력 값입니다.")
-        LocalDate birth) {
+        LocalDate birth
+) {
 }

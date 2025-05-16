@@ -76,6 +76,5 @@ public class AdminAuthService {
     @Transactional
     public void logout(User user) {
         log.info("[AdminAuthService] logout() 실행: 관리자 로그아웃 요청: userId = {}", user.getId());
-        // Redis 이용 시 Blacklist 추가하는 방향으로 수정
     }
 }

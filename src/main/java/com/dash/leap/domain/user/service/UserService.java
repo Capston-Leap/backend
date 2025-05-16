@@ -127,7 +127,6 @@ public class UserService {
     @Transactional
     public void logout(User user) {
         log.info("[UserService] 로그아웃 요청: userId = {}", user.getId());
-        // Redis 이용 시 Blacklist 추가하는 방향으로 수정
     }
 
     @Transactional
