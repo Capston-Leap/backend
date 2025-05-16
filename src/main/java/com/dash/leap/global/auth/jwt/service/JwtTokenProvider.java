@@ -1,7 +1,6 @@
 package com.dash.leap.global.auth.jwt.service;
 
 import com.dash.leap.domain.user.entity.User;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -22,10 +21,5 @@ public class JwtTokenProvider extends AbstractTokenProvider {
                 .claim("role", user.getUserType().name())
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-    }
-
-    public long extractUserId(String token) {
-        Claims claims = getPayload(token);
-        return claims.get("id", Long.class);
     }
 }

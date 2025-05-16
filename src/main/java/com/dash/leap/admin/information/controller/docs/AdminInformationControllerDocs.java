@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "[Admin] Information", description = "Admin Information API")
 public interface AdminInformationControllerDocs {
 
-
     // 자립지원정보 목록 조회
     @Operation(summary = "자립지원정보 목록 조회", description = "등록된 자립지원정보의 카테고리 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "카테고리 목록 조회 성공")
