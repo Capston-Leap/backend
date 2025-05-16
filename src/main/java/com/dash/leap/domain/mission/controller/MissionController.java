@@ -79,4 +79,10 @@ public class MissionController implements MissionControllerDocs {
         MissionRecordResponse response = missionService.readMissionRecord(userDetails.user(), userMissionId);
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/area/completed")
+    public ResponseEntity<CompletedMissionAreaResponse> getCompletedMissionArea(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        CompletedMissionAreaResponse response = missionService.getCompletedMissionArea(userDetails.user());
+        return ResponseEntity.ok().body(response);
+    }
 }
