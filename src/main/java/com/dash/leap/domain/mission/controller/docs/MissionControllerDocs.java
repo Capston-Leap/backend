@@ -59,4 +59,8 @@ public interface MissionControllerDocs {
             @PathVariable(name = "userMissionId") Long userMissionId,
             CustomUserDetails userDetails
     );
+
+    @Operation(summary = "완료된 자립목표영역 조회", description = "완료된 자립목표영역을 요청합니다.")
+    @ApiResponse(description = "조회 성공", responseCode = "200")
+    ResponseEntity<CompletedMissionAreaResponse> getCompletedMissionArea(CustomUserDetails userDetails);
 }

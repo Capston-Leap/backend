@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -187,6 +188,18 @@ public class MissionService {
         }
 
         return MissionRecordResponse.from(userMission);
+    }
+
+    public CompletedMissionAreaResponse getCompletedMissionArea(User user) {
+        log.info("[MissionService] getCompletedMissionArea() 실행: 완료된 미션영역 요청: 사용자 ID = {}", user.getId());
+        List<MissionType> completedArea = Arrays.stream(MissionType.values())
+                .filter(type -> {
+                    long totalCount = missionRecordRepository.countAllByUserAndMissionType(user.getId(), type);
+                    long completedCount = missionRecordRepository.countCompletedByUserAndMissionType(user.getId(), type);
+                    return totalCount > 0 && totalCount == completedCount;
+                })
+                .toList();
+        return new CompletedMissionAreaResponse(completedArea);
     }
 
     /**
