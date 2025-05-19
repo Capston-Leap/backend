@@ -25,8 +25,8 @@ public class PostController implements PostControllerDocs {
     @GetMapping("/{communityId}")
     public ResponseEntity<Page<PostListAllResponse>> getPostAll(
             @PathVariable(name = "communityId") Long communityId,
-            @RequestParam(name = "page", defaultValue = "1") @Min(value = 0) int pageNum,
-            @RequestParam(name = "size", defaultValue = "10") @Positive int pageSize
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
     ) {
         return ResponseEntity.ok(postService.getPostAll(communityId, pageNum - 1 , pageSize));
     }
@@ -36,8 +36,8 @@ public class PostController implements PostControllerDocs {
     public ResponseEntity<PostDetailResponse> getPostDetail(
             @PathVariable(name = "communityId") Long communityId,
             @PathVariable(name = "postId") Long postId,
-            @RequestParam(name = "page", defaultValue = "1") @Min(value = 0) int pageNum,
-            @RequestParam(name = "size", defaultValue = "10") @Positive int pageSize
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
     ) {
         return ResponseEntity.ok(postService.getPostDetail(communityId, postId, pageNum - 1, pageSize));
     }
@@ -47,8 +47,8 @@ public class PostController implements PostControllerDocs {
     public ResponseEntity<Page<PostListAllResponse>> getMyPostsInCommunity(
             @PathVariable(name = "communityId") Long communityId,
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam(name = "page", defaultValue = "1") @Min(value = 0) int pageNum,
-            @RequestParam(name = "size", defaultValue = "10") @Positive int pageSize
+            @RequestParam(name = "page", defaultValue = "1") int pageNum,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
     ) {
         return ResponseEntity.ok(
                 postService.getMyPostAll(communityId, userDetails, pageNum - 1, pageSize)
