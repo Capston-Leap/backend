@@ -38,6 +38,7 @@ public class AdminInformationService {
                 info.getId(),
                 info.getInfoType(),
                 info.getTitle(),
+                info.getContent(),
                 info.getUrl(),
                 info.getCreatedAt(),
                 info.getUpdatedAt()

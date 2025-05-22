@@ -8,6 +8,7 @@ public record InformationListResponse(
         Long id,
         InfoType category,
         String title,
+        String description,
         String url,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
