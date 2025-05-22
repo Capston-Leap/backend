@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
@@ -44,6 +45,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/", "/login", "/signup", "/index.html", "/assets/**", "/index-*.js", "/index-*.css", "/vite.svg", "/favicon.ico", // 정적 리소스 허용
+                                "/leap/admin/**", "/leap/admin/login", "/leap/admin/signup",
+                                "/leap/index.html", "/leap/static/**", "/leap/*.js", "/leap/*.css", "/leap/*.json", "/leap/*.ico", "/leap/manifest.json", "/leap/robots.txt", // 관리자 정적 리소스 허용
                                 "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**", // Swagger 접근 허용
                                 "/user/register", "/user/register/**", "/user/login", // 회원가입, 로그인 시 접근 허용
                                 "/admin/register", "/admin/login" // 관리자 회원가입, 로그인 시 접근 허용
@@ -60,6 +64,11 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll);
 
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/leap/**");
     }
 
     @Bean

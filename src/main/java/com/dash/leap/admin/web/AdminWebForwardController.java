@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AdminWebForwardController {
 
-    @GetMapping("/leap/**")
+    @GetMapping(value = { "/leap/admin/**" })
     public String forwardAdminWeb() {
-        return "forward:/leap/admin/index.html";
+        return "forward:/leap/index.html";
     }
 }

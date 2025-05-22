@@ -32,6 +32,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String uri = request.getRequestURI();
+
+        // 관리자 웹의 정적 리소스 및 React 라우팅은 무시
+        if (uri.startsWith("/leap/admin") &&
+                (request.getMethod().equals("GET") || request.getMethod().equals("HEAD")) &&
+                (uri.matches(".*\\.(js|css|png|jpg|jpeg|json|ico|svg|woff2?)$") || !uri.contains("."))) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             String token = extractToken(request);
 

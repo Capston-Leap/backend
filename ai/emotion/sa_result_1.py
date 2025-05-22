@@ -60,6 +60,8 @@ def analyze_diary_all(diary_text):
 # 분석 실행
 analysis_result = analyze_diary_all(diary_text)
 
+model = model.to('cpu')
+
 # 결과 출력
 print("감정 분석 결과:")
 print(f"예측된 감정: {predicted_emotion}")

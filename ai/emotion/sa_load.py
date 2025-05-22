@@ -28,7 +28,7 @@ class KoBERTClassifier(nn.Module):
 
 # 3. 모델 인스턴스 생성 및 로드
 def load_model(model_path="ai/emotion/kobert_emotion_model_2.pt"):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     model = KoBERTClassifier(kobert_model)
     model.load_state_dict(torch.load(model_path, map_location=device))
     model.to(device)
