@@ -75,7 +75,7 @@ public class MissionService {
 
         }
 
-        List<Mission> missions = missionRepository.findByMissionType(request.missionType());
+        List<Mission> missions = missionRepository.findByMissionTypeAndIsDeletedFalse(request.missionType());
 
         for (Mission mission : missions) {
             MissionRecord userMission = MissionRecord.builder()

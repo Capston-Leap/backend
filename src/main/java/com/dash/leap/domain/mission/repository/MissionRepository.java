@@ -11,4 +11,6 @@ import java.util.List;
 public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     List<Mission> findByMissionType(MissionType missionType);
+
+    List<Mission> findByMissionTypeAndIsDeletedFalse(MissionType missionType);
 }
